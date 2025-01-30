@@ -1,5 +1,6 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Layout from "./Layout/Layout.tsx";
+import Home from "./page/Home.tsx";
 
 
 const App = () => {
@@ -7,7 +8,7 @@ const App = () => {
 		<BrowserRouter>
 			<Routes>
 				<Route element={<Layout />}>
-					<Route index={true} element={<h1>Home</h1>} />
+					<Route index={true} element={<Home />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>
