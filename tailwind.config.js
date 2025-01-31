@@ -16,8 +16,26 @@ export default {
 				"1300px": "1300px",
 				"1500px": "1500px",
 				"800px": "800px",
-				"400px": "400px"
+				"700px": "700px",
+				"600px": "600px",
+				"500px": "500px",
+				"400px": "400px",
+				"320px": "320px"
+			},
+			animation: {
+				opacityChange: "changeOpacity 8s infinite alternate"
+			},
+			keyframes: {
+				changeOpacity: {
+					"0%, 100%": {opacity: "1"},
+					"16.67%": {opacity: "0.9"},
+					"33.33%": {opacity: "0.8"},
+					"50%": {opacity: "0.6"},
+					"66.67%": {opacity: "0.5"},
+					"83.33%": {opacity: "0.4"}
+				}
 			}
+			
 		}
 	}, plugins: []
 };
