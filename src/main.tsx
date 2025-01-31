@@ -6,6 +6,6 @@ import ThemeProvider from "./context/ThemeProvider.tsx";
 
 createRoot(document.getElementById("root")!).render(
 	<ThemeProvider attribute="class" defaultTheme="system" enableSystem={true}>
-		<App />
+		<App  />
 	</ThemeProvider>
 );
