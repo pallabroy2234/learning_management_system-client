@@ -13,9 +13,21 @@
 */
 
 
+/*body {*/
+/*    @apply bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:to-black  duration-300 bg-no-repeat*/
+/*}*/
+
 body {
-    @apply bg-white dark:bg-gradient-to-b dark:from-gray-900 dark:to-black  duration-300 bg-no-repeat
+    @apply transition-colors duration-500 bg-no-repeat;
 }
+
+/* Dark Mode Styles */
+.dark body {
+    @apply bg-gradient-to-b from-[#0a192f] to-[#172a45]
+    bg-opacity-90 backdrop-blur-lg
+    border border-white/10 shadow-2xl;
+}
+
 
 .hero_animation {
     background-image: linear-gradient(147.92deg, hsla(239, 76%, 53%, 0.456) 10.41%, hsla(0, 0%, 100%, 0) 89.25%);
