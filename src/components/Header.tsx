@@ -5,7 +5,6 @@ import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle, HiUserCircle} from "react-icons/hi";
 
 
-
 type Props = {
 	open: boolean;
 	setOpen: (open: boolean) => void;
@@ -34,13 +33,13 @@ const Header: FC<Props> = ({activeItem, setOpen}) => {
 	}, []);
 
 
-	// useEffect(() => {
-	// 	if (openSidebar) {
-	// 		document.body.style.overflow = "hidden";
-	// 	} else {
-	// 		document.body.style.overflow = "";
-	// 	}
-	// }, [openSidebar]);
+	useEffect(() => {
+		if (openSidebar) {
+			document.body.style.overflowX = "hidden";
+		} else {
+			document.body.style.overflow = "";
+		}
+	}, [openSidebar]);
 
 	return (
 		<>
