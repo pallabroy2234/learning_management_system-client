@@ -18,7 +18,7 @@
 /*}*/
 
 body {
-    @apply transition-colors duration-500 bg-no-repeat;
+    @apply transition-colors duration-500 bg-no-repeat
 }
 
 /* Dark Mode Styles */

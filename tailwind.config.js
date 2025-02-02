@@ -33,7 +33,7 @@ export default {
 					"50%": {opacity: "0.6"},
 					"66.67%": {opacity: "0.5"},
 					"83.33%": {opacity: "0.4"}
-				},
+				}
 			}
 			
 		}
