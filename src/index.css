@@ -35,6 +35,12 @@ body {
 }
 
 
+/* Hide default password reveal button in Edge, Chrome, and Safari */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-webkit-credentials-auto-fill-button {
+    display: none;
+}
+
 @keyframes changeBackgroundColor {
     0%, 100% {
         opacity: 1;
