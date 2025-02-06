@@ -3,15 +3,21 @@ import {Link, useLocation} from "react-router-dom";
 import NavItems from "./NavItems.tsx";
 import ThemeSwitcher from "./ThemeSwitcher.tsx";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle, HiUserCircle} from "react-icons/hi";
+import CustomModal from "./CustomModal.tsx";
+import Login from "./auth/Login.tsx";
+import SignUp from "./auth/SignUp.tsx";
 
 
 type Props = {
 	open: boolean;
 	setOpen: (open: boolean) => void;
 	activeItem: number;
+	setActiveItem: (activeItem: number) => void;
+	route: string;
+	setRoute: (route: string) => void;
 };
 
-const Header: FC<Props> = ({activeItem, setOpen}) => {
+const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 	const {pathname} = useLocation();
 	const [showHeader, setShowHeader] = useState(true);
 	const lastScrollY = useRef(0);
@@ -72,29 +78,56 @@ const Header: FC<Props> = ({activeItem, setOpen}) => {
 				</div>
 			</header>
 
-			{/*--------------------- Small Screen Sidebar----------------------*/}
-
+			{/*---------------------Start Small Screen Sidebar----------------------*/}
 
 			<div className="overflow-hidden">
 				<div className={`fixed   bg-white dark:bg-slate-900 z-[999999] opacity-90 transition-transform duration-300 top-0  bottom-0 right-0 overflow-y-auto  ${openSidebar ? "translate-x-0  max-w-[360px]" : "translate-x-full w-0 max-w-0 transition-all ease-in-out"}`}>
 					<div className="mt-5">
 						<div className="flex flex-col gap-4 mt-4 flex-1">
-							<Link to={"/"} className="px-6 text-[25px] font-Poppins font-[500] text-black dark:text-white">E-Learning</Link>
-							<Link to="/" className={`${pathname === "/" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Home</Link>
-							<Link to="/courses" className={`${pathname === "/courses" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Courses</Link>
-							<Link to="/about" className={`${pathname === "/about" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>About</Link>
-							<Link to="/policy" className={`${pathname === "/policy" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Policy</Link>
-							<Link to="/faq" className={`${pathname === "/faq" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>FAQ</Link>
-							<Link to="/profile"><HiOutlineUserCircle className="cursor-pointer ml-5  text-black dark:text-white" size={25} /></Link>
+							<Link onClick={() => setOpenSidebar(false)} to={"/"} className="px-6 text-[25px] font-Poppins font-[500] text-black dark:text-white">E-Learning</Link>
+							<Link onClick={() => setOpenSidebar(false)} to="/" className={`${pathname === "/" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Home</Link>
+							<Link onClick={() => setOpenSidebar(false)} to="/courses" className={`${pathname === "/courses" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Courses</Link>
+							<Link onClick={() => setOpenSidebar(false)} to="/about" className={`${pathname === "/about" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>About</Link>
+							<Link onClick={() => setOpenSidebar(false)} to="/policy" className={`${pathname === "/policy" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Policy</Link>
+							<Link onClick={() => setOpenSidebar(false)} to="/faq" className={`${pathname === "/faq" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>FAQ</Link>
+							<div onClick={() => setOpenSidebar(false)}>
+								<HiOutlineUserCircle onClick={() => setOpen(true)} className="cursor-pointer ml-5  text-black dark:text-white" size={25} />
+							</div>
 						</div>
 						<p className={`px-6 my-10`}>© 2025 Copyright: Pallab Roy Tushar</p>
 					</div>
 				</div>
 			</div>
 
-
 			<div onClick={() => setOpenSidebar(false)} className={`fixed cursor-pointer top-0 right-0 bottom-0 left-0 overflow-hidden bg-black/50 opacity-50 z-[99998] backdrop-blur-lg ${openSidebar ? "visible" : "invisible"}`}>
 			</div>
+
+
+			{/*	SignUp and LogIn Modal */}
+			<div>
+				{
+					route === "Login" && (
+						<div>
+							{
+								open &&
+								<CustomModal open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} component={Login} />
+							}
+						</div>
+					)
+				}
+
+				{
+					route === "Sign-up" && (
+						<div>
+							{
+								open &&
+								<CustomModal open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} component={SignUp} />
+							}
+						</div>
+					)
+				}
+			</div>
+
 		</>
 	);
 };
