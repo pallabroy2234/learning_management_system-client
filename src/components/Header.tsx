@@ -6,6 +6,7 @@ import {HiOutlineMenuAlt3, HiOutlineUserCircle, HiUserCircle} from "react-icons/
 import CustomModal from "./CustomModal.tsx";
 import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
+import Verification from "./auth/Verification.tsx";
 
 
 type Props = {
@@ -122,6 +123,17 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 							{
 								open &&
 								<CustomModal open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} component={SignUp} />
+							}
+						</div>
+					)
+				}
+
+				{
+					route === "Verification" && (
+						<div>
+							{
+								open &&
+								<CustomModal open={open} setOpen={setOpen} activeItem={activeItem} setRoute={setRoute} component={Verification} />
 							}
 						</div>
 					)
