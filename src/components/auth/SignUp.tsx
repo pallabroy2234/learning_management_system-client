@@ -33,6 +33,7 @@ const SignUp: FC<Props> = ({setRoute}) => {
 
 	// Form handle submit
 	const onSubmit = (data: any) => {
+		setRoute("Verification");
 		console.log(data);
 	};
 
