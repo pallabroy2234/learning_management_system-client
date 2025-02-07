@@ -23,7 +23,8 @@ export default {
 				"320px": "320px"
 			},
 			animation: {
-				opacityChange: "changeOpacity 8s infinite alternate"
+				opacityChange: "changeOpacity 8s infinite alternate",
+				shake: "shake 0.5s cubic-bezier(0.4, 0, 0.6, 1) both"
 			},
 			keyframes: {
 				changeOpacity: {
@@ -33,6 +34,14 @@ export default {
 					"50%": {opacity: "0.6"},
 					"66.67%": {opacity: "0.5"},
 					"83.33%": {opacity: "0.4"}
+				},
+				shake: {
+					"0%": {transform: "translateX(0)"},
+					"20%": {transform: "translateX(-2px)"},
+					"40%": {transform: "translateX(2px)"},
+					"60%": {transform: "translateX(-2px)"},
+					"80%": {transform: "translateX(2px)"},
+					"100%": {transform: "translateX(0)"}
 				}
 			}
 			
