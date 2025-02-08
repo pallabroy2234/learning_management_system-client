@@ -10,7 +10,7 @@ type Props = {
 }
 
 const CustomModal: FC<Props> = ({open, setOpen, setRoute, component: Component}) => {
-	console.log(open);
+
 
 	return (
 		<Modal open={open} onClose={() => setOpen(false)} aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
