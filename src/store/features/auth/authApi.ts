@@ -41,7 +41,11 @@ export const authApi = api.injectEndpoints({
 			}
 		}),
 
-		/**/
+		/**
+		 * @description       Activate a user account
+		 * @route             POST /user/activate-user
+		 * @access            Public
+		* */
 		activation: builder.mutation<ActivationResponse, ActivationRequest>({
 			query: ({activation_token, activation_code}) => ({
 				url: "/user/activate-user",
