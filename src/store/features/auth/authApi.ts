@@ -1,7 +1,6 @@
 import {api} from "../api.ts";
-import {setErrorMessage, userRegistration} from "./authSlice.ts";
+import {userRegistration} from "./authSlice.ts";
 import {ActivationRequest, ActivationResponse, RegistrationRequest, RegistrationResponse} from "./authTypes.ts";
-import {handleError} from "../../../utils/errorHandler.ts";
 
 
 export const authApi = api.injectEndpoints({
@@ -37,8 +36,7 @@ export const authApi = api.injectEndpoints({
 						}));
 					}
 				} catch (err: any) {
-					console.log(err.message);
-					dispatch(setErrorMessage(handleError(err, "Registration failed")));
+					console.log("error", err);
 				}
 			}
 		}),
