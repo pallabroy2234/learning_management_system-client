@@ -6,12 +6,9 @@ import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai"
 import {FcGoogle} from "react-icons/fc";
 import {useRegisterMutation} from "../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
-import {CustomError, RootState} from "../../types/@types.ts";
-import {useDispatch, useSelector} from "react-redux";
-import {setErrorMessage} from "../../store/features/auth/authSlice.ts";
+import {CustomError} from "../../types/@types.ts";
 import {RegistrationRequest} from "../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
-import {handleError} from "../../utils/errorHandler.ts";
 
 type Props = {
 	setRoute: (route: string) => void;
@@ -28,8 +25,6 @@ const schema = Yup.object().shape({
 const SignUp: FC<Props> = ({setRoute}) => {
 	const [show, setShow] = useState(false);
 	const [userRegister, {isLoading, isError, error, isSuccess, data}] = useRegisterMutation();
-	const {errorMessage} = useSelector((state: RootState) => state.auth);
-	const dispatch = useDispatch();
 	const {handleSubmit, register, reset, formState: {errors, isValid}} = useForm({
 		defaultValues: {
 			name: "",
@@ -54,22 +49,15 @@ const SignUp: FC<Props> = ({setRoute}) => {
 				toast.error(err?.data?.message);
 			}
 		}
-	}, [isSuccess, isError, error, data]);
-
-	useEffect(() => {
-		if (errorMessage) {
-			toast.error(errorMessage);
-		}
-	}, [errorMessage]);
+	}, [isSuccess, isError]);
 
 
 	// Form handle submit
 	const onSubmit = async (user: RegistrationRequest) => {
 		try {
 			await userRegister(user).unwrap();
-		} catch (e: any) {
-			console.log(e.message);
-			dispatch(setErrorMessage(handleError(e, "Registration failed")));
+		} catch (err: any) {
+			console.log("error", err);
 		}
 	};
 
