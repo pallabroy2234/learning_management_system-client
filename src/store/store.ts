@@ -1,6 +1,7 @@
 import {configureStore} from "@reduxjs/toolkit";
 import {createLogger} from "redux-logger";
 import {api} from "./features/api.ts";
+import {authSlice} from "./features/auth/authSlice.ts";
 
 
 // Node env
@@ -26,8 +27,9 @@ const logger = createLogger({
 const store = configureStore({
 	reducer: {
 		// 	 API,
-		[api.reducerPath]: api.reducer
+		[api.reducerPath]: api.reducer,
 		// 	Reducer
+		[authSlice.name]: authSlice.reducer
 	},
 	devTools: import.meta.env.VITE_NODE_ENV === "development",
 	middleware: (getDefaultMiddleware) => {
