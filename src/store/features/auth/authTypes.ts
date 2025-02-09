@@ -31,3 +31,18 @@ export interface ActivationSuccessResponse {
 }
 
 export type ActivationResponse = ActivationSuccessResponse | ErrorResponse;
+
+export interface ILoginRequest {
+	email: string,
+	password: string
+}
+
+export interface ILoginSuccessResponse {
+	success: boolean,
+	message: string,
+	payload: Object,
+	accessToken: string
+}
+
+
+export type LoginResponse = ILoginSuccessResponse | ErrorResponse
