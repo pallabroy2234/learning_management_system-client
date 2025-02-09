@@ -4,7 +4,6 @@ import {createSlice} from "@reduxjs/toolkit";
 const initialState = {
 	token: "",
 	user: {},
-	errorMessage: ""
 };
 
 
@@ -17,17 +16,14 @@ export const authSlice = createSlice({
 		},
 		userLoggedIn: (state, {payload}) => {
 			state.token = payload.accessToken;
-			state.user = payload.payload;
+			state.user = payload.user;
 		},
 		userLoggedOut: (state) => {
 			state.token = "";
 			state.user = {};
 		},
-		setErrorMessage: (state, {payload}) => {
-			state.errorMessage = payload;
-		}
 	}
 });
 
 
-export const {userRegistration, userLoggedIn, userLoggedOut, setErrorMessage} = authSlice.actions;
+export const {userRegistration, userLoggedIn, userLoggedOut} = authSlice.actions;
