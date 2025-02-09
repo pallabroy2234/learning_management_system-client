@@ -46,4 +46,12 @@ const store = configureStore({
 });
 
 
+// const initialStore = async () => {
+// 	await store.dispatch(api.endpoints.refreshToken.initiate({}, {forceRefetch: true}));
+// // 	Again call load user info endpoint to get the updated user info
+// };
+//
+// initialStore();
+
+
 export default store;
