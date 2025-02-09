@@ -3,7 +3,7 @@ import {Link} from "react-router-dom";
 
 const Hero = () => {
 	return (
-		<div className="w-[95%] 800px:w-[92%] m-auto py-2 h-full lg:pt-0 pt-[90px]">
+		<div className="w-[95%] 800px:w-[92%] m-auto  h-full 800px:mt-[80px] 800px:pb-[50px] 320px:pb-[300px]   lg:pt-0 pt-[90px]">
 			<div className="grid grid-cols-1 1000px:grid-cols-2 h-screen 1000px:gap-2">
 				<div className="relative flex 1000px:items-center 1000px:justify-start justify-center items-center">
 					<div className="relative flex justify-center items-center 1500px:w-[600px] 1500px:h-[600px] 1200px:w-[500px] 1200px:h-[500px] 1000px:h-[400px] 1000px:w-[400px] 700px:w-[500px] 700px:h-[500px] 500px:w-[400px] 500px:h-[400px] w-[300px] h-[300px]  before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-r before:from-blue-500 before:to-transparent before:animate-opacityChange">
