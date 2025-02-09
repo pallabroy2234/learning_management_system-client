@@ -1,13 +1,19 @@
-import {FC, useState} from "react";
+import {FC, useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import {FcGoogle} from "react-icons/fc";
+import {useLoginMutation} from "../../store/features/auth/authApi.ts";
+import toast from "react-hot-toast";
+import {CustomError} from "../../types/@types.ts";
+import {ILoginRequest} from "../../store/features/auth/authTypes.ts";
+import {ThreeDots} from "react-loader-spinner";
 
 
 type Props = {
 	setRoute: (route: string) => void;
+	setOpen: (open: boolean) => void;
 }
 
 
@@ -17,21 +23,45 @@ const schema = Yup.object().shape({
 });
 
 
-const Login: FC<Props> = ({setRoute}) => {
+const Login: FC<Props> = ({setRoute, setOpen}) => {
 	const [show, setShow] = useState(false);
-	const {handleSubmit, register, formState: {errors, isValid}} = useForm({
+	const [userLogin, {isLoading, isSuccess, isError, error, data}] = useLoginMutation();
+	const {handleSubmit, register, reset, formState: {errors, isValid}} = useForm({
 		defaultValues: {
 			email: "",
 			password: ""
 		},
 		resolver: yupResolver(schema),
 		mode: "all"
-
 	});
 
+	useEffect(() => {
+		if (isSuccess) {
+			const message = data?.message || "Login successful";
+			toast.success(message);
+			setOpen(false);
+			reset();
+		}
+		if (isError) {
+			if ("data" in error) {
+				const err = error as CustomError;
+				toast.error(err?.data.message);
+			}
+		}
+	}, [isError, isSuccess]);
+
+
 	// Form handle submit
-	const onSubmit = (data: any) => {
-		console.log(data);
+	const onSubmit = async (data: ILoginRequest) => {
+		try {
+			await userLogin({
+				email: data.email,
+				password: data.password
+			});
+
+		} catch (e: any) {
+			console.log("error", e);
+		}
 	};
 
 
@@ -60,13 +90,13 @@ const Login: FC<Props> = ({setRoute}) => {
 				</div>
 				<div className="w-full flex justify-center items-center">
 					<button type="submit" disabled={!isValid}
-							className={`w-full py-2 text-[13px] 500px:text-[16px] font-Poppins font-semibold rounded  transition-all duration-300 ease-in-out ${
+							className={`w-full flex justify-center items-center py-2 text-[13px] 500px:text-[16px] font-Poppins font-semibold rounded  transition-all duration-300 ease-in-out ${
 								isValid
 									? "bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600 shadow-md"
 									: "bg-blue-300 border-blue-400 text-blue-100 cursor-not-allowed"
 							}`}
 					>
-						Login
+						{isLoading ? <ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Log in"}
 					</button>
 				</div>
 
