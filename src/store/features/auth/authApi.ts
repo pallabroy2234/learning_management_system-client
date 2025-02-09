@@ -1,6 +1,12 @@
 import {api} from "../api.ts";
-import {userRegistration} from "./authSlice.ts";
-import {ActivationRequest, ActivationResponse, RegistrationRequest, RegistrationResponse} from "./authTypes.ts";
+import {userLoggedIn, userRegistration} from "./authSlice.ts";
+import {
+	ActivationRequest,
+	ActivationResponse,
+	ILoginRequest, LoginResponse,
+	RegistrationRequest,
+	RegistrationResponse
+} from "./authTypes.ts";
 
 
 export const authApi = api.injectEndpoints({
@@ -45,7 +51,7 @@ export const authApi = api.injectEndpoints({
 		 * @description       Activate a user account
 		 * @route             POST /user/activate-user
 		 * @access            Public
-		* */
+		 * */
 		activation: builder.mutation<ActivationResponse, ActivationRequest>({
 			query: ({activation_token, activation_code}) => ({
 				url: "/user/activate-user",
@@ -56,10 +62,42 @@ export const authApi = api.injectEndpoints({
 					activation_code
 				}
 			})
+		}),
+
+		/**
+		 * @description       Login a user
+		 * @route             POST /user/login
+		 * @access            Public
+		 * @param             email, password
+		 * */
+
+		login: builder.mutation<LoginResponse, ILoginRequest>({
+			query: ({email, password}) => ({
+				url: "user/login",
+				method: "POST",
+				credentials: "include",
+				body: {
+					email,
+					password
+				}
+			}),
+			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+				try {
+					const {data} = await queryFulfilled;
+					if (data.success) {
+						dispatch(userLoggedIn({
+							accessToken: data?.accessToken,
+							user: data?.payload
+						}));
+					}
+				} catch (e: any) {
+					console.log("authApi login error", e.message);
+				}
+			}
 		})
 
 	}),
 	overrideExisting: false
 });
 
-export const {useRegisterMutation, useActivationMutation} = authApi;
+export const {useRegisterMutation, useActivationMutation, useLoginMutation} = authApi;
