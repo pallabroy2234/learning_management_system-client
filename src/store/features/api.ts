@@ -33,14 +33,57 @@ const mutex = {
 const baseQuery = fetchBaseQuery({
 	baseUrl: baseURL,
 	credentials: "include"
+	// Add proper error handling for fetch
+
+	// fetchFn: async (...args) => {
+	// 	try {
+	// 		return await fetch(...args);
+	// 	} catch (error) {
+	// 		if (error instanceof Error) {
+	// 			console.error("Network error:", error.message);
+	// 		}
+	// 		throw error;
+	// 	}
+	// },
+	// validateStatus: (response, _) => {
+	// 	// (!document.cookie.includes("access_token") && !document.cookie.includes("refresh_token") && response.status === 401)
+	// 	if (!document.cookie.includes("refresh_token") && response.status === 401) {
+	// 		return false;
+	// 	}
+	// 	return response.status === 200;
+	// }
 });
 
 
 const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, {
 	status: number | string
 }> = async (args, api, extraOptions) => {
+
+	// ?? Skip protected routes if no cookies exits
+	// if (!document.cookie.includes("access_token") && !document.cookie.includes("refresh_token") && typeof args !== "string" && args.url?.startsWith("/user/"))
+	// ! some time access token is not available
+	// if (!document.cookie.includes("refresh_token") && typeof args !== "string" && args.url?.startsWith("/user/")) {
+	// 	return {
+	// 		error: {
+	// 			status: "CANCELLED",
+	// 			data: "No session available"
+	// 		}
+	// 	};
+	// }
+
+
 	let result = await baseQuery(args, api, extraOptions);
 	if (result.error?.status === 401) {
+		// Immediately logout if
+		// if (!document.cookie.includes("refresh_token")) {
+		// 	api.dispatch(userLoggedOut());
+		// 	return {
+		// 		error: {
+		// 			status: "CANCELLED",
+		// 			data: "No session available"
+		// 		}
+		// 	};
+		// }
 
 		// Handle 401 Unauthorized error
 		if (!mutex.isLocked) {
@@ -54,7 +97,11 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, {
 					// result = await baseQuery(args, api, extraOptions);
 
 					// 	 Fetch fresh user data after refresh token
-					const userResult: any = await baseQuery("/user/user-info", api, extraOptions);
+					const userResult: any = await baseQuery({
+						url: "/user/user-info",
+						method: "GET",
+						credentials: "include"
+					}, api, extraOptions);
 
 					if (userResult.data) {
 						api.dispatch(userLoggedIn({
@@ -67,7 +114,7 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, {
 
 				} else {
 					// logout user
-					api.dispatch({});
+					api.dispatch(userLoggedOut());
 				}
 			} finally {
 				mutex.unlock();
@@ -103,7 +150,7 @@ export const api = createApi({
 						}));
 					}
 				} catch (e: any) {
-					console.log("authApi login error", e.message);
+					console.log("authApi login error", e);
 				}
 			}
 		})
@@ -111,8 +158,14 @@ export const api = createApi({
 });
 
 export const initializeAuth = async (store: any) => {
+	// Check if refresh token is available or not if not than logout user
+	// if (!document.cookie.includes("refresh_token")) {
+	// 	store.dispatch(userLoggedOut());
+	// 	return;
+	// }
+
 	try {
-		await store.dispatch(api.endpoints.getCurrentUser.initiate({}), {forceRefatch: true});
+		await store.dispatch(api.endpoints.getCurrentUser.initiate(undefined, {forceRefetch: true}));
 	} catch (error: any) {
 		store.dispatch(userLoggedOut());
 	}
