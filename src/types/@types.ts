@@ -11,3 +11,17 @@ export type CustomError = {
 
 
 export type RootState = ReturnType<typeof store.getState>
+
+
+export interface IUser {
+	_id: string;
+	name: string;
+	email: string;
+	avatar: object;
+	role: string;
+	isVerified: boolean;
+	courses: Object[];
+	createdAt: string;
+	updatedAt: string;
+	__v: number;
+}
