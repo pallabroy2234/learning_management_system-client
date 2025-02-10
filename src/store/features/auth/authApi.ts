@@ -1,5 +1,5 @@
 import {api} from "../api.ts";
-import {userLoggedIn, userLoggedOut, userRegistration} from "./authSlice.ts";
+import {userLoggedIn, userRegistration} from "./authSlice.ts";
 import {
 	ActivationRequest,
 	ActivationResponse,
@@ -93,23 +93,6 @@ export const authApi = api.injectEndpoints({
 				} catch (e: any) {
 					// console.log("authApi login error", e.message);
 					console.log("authApi login error", e);
-				}
-			}
-		}),
-		logOut: builder.query({
-			query: () => ({
-				url: "user/logout",
-				method: "GET",
-				credentials: "include"
-			}),
-			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
-				try {
-					const {data} = await queryFulfilled;
-					if (data.success) {
-						dispatch(userLoggedOut());
-					}
-				} catch (e: any) {
-					console.log("authApi login error", e.message);
 				}
 			}
 		})
