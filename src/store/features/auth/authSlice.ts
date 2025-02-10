@@ -1,8 +1,14 @@
 import {createSlice} from "@reduxjs/toolkit";
+import {IUser} from "../../../types/@types.ts";
 
 
-const initialState = {
-	token: "",
+type AuthState = {
+	token: string | null;
+	user: IUser | null
+}
+
+const initialState: AuthState = {
+	token: null,
 	user: null
 };
 
