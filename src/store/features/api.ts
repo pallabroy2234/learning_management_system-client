@@ -33,25 +33,6 @@ const mutex = {
 const baseQuery = fetchBaseQuery({
 	baseUrl: baseURL,
 	credentials: "include"
-	// Add proper error handling for fetch
-
-	// fetchFn: async (...args) => {
-	// 	try {
-	// 		return await fetch(...args);
-	// 	} catch (error) {
-	// 		if (error instanceof Error) {
-	// 			console.error("Network error:", error.message);
-	// 		}
-	// 		throw error;
-	// 	}
-	// },
-	// validateStatus: (response, _) => {
-	// 	// (!document.cookie.includes("access_token") && !document.cookie.includes("refresh_token") && response.status === 401)
-	// 	if (!document.cookie.includes("refresh_token") && response.status === 401) {
-	// 		return false;
-	// 	}
-	// 	return response.status === 200;
-	// }
 });
 
 
@@ -114,7 +95,10 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, {
 
 				} else {
 					// logout user
-					api.dispatch(userLoggedOut());
+					const {data}: any = await baseQuery("/user/logout", api, extraOptions);
+					if (data && data?.success) {
+						api.dispatch(userLoggedOut());
+					}
 				}
 			} finally {
 				mutex.unlock();
@@ -153,17 +137,29 @@ export const api = createApi({
 					console.log("authApi login error", e);
 				}
 			}
+		}),
+		logOut: builder.mutation({
+			query: () => ({
+				url: "user/logout",
+				method: "POST",
+				credentials: "include"
+			}),
+			invalidatesTags: ["User"],
+			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+				try {
+					const {data} = await queryFulfilled;
+					if (data && data.success) {
+						dispatch(userLoggedOut());
+					}
+				} catch (e) {
+					console.log("authApi logout error", e);
+				}
+			}
 		})
 	})
 });
 
 export const initializeAuth = async (store: any) => {
-	// Check if refresh token is available or not if not than logout user
-	// if (!document.cookie.includes("refresh_token")) {
-	// 	store.dispatch(userLoggedOut());
-	// 	return;
-	// }
-
 	try {
 		await store.dispatch(api.endpoints.getCurrentUser.initiate(undefined, {forceRefetch: true}));
 	} catch (error: any) {
@@ -173,45 +169,6 @@ export const initializeAuth = async (store: any) => {
 
 
 export const {} = api;
-
-
-// export const api = createApi({
-// 	reducerPath: "api",
-// 	baseQuery: fetchBaseQuery({
-// 		baseUrl: baseURL
-// 	}),
-// 	endpoints: () => ({})
-// });
-//
-// export const {} = api;
-
-
-// export const api = createApi({
-// 	reducerPath: "api",
-// 	baseQuery: fetchBaseQuery({
-// 		baseUrl: baseURL
-// 	}),
-// 	endpoints: (builder) => ({
-// 		refreshToken: builder.query({
-// 			query: () => ({
-// 				url: "/user/refresh",
-// 				method: "GET",
-// 				credentials: "include"
-// 			})
-// 		}),
-// 		// Again call the user info endpoint to get the updated user info
-// 		loadUser: builder.query({
-// 			query: ()=> ({
-// 				url:"/user/user-info",
-// 				method:"GET",
-// 				credentials:"include"
-// 			}),
-//
-// 		})
-// 	})
-// });
-//
-// export const {useRefreshTokenQuery} = api;
 
 
 
