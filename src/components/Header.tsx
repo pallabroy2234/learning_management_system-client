@@ -7,6 +7,9 @@ import CustomModal from "./CustomModal.tsx";
 import Login from "./auth/Login.tsx";
 import SignUp from "./auth/SignUp.tsx";
 import Verification from "./auth/Verification.tsx";
+import {useSelector} from "react-redux";
+import {RootState} from "../types/@types.ts";
+import avatar from "../../public/avatar.jpg";
 
 
 type Props = {
@@ -23,6 +26,7 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 	const [showHeader, setShowHeader] = useState(true);
 	const lastScrollY = useRef(0);
 	const [openSidebar, setOpenSidebar] = useState(false);
+	const {user} = useSelector((state: RootState) => state.auth);
 
 
 	useEffect(() => {
@@ -74,7 +78,15 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 						</div>
 
 						{/* User Profile */}
-						<HiUserCircle onClick={() => setOpen(true)} size={30} className="cursor-pointer hidden 800px:block dark:text-white text-black" />
+						{
+							user ? (
+								<Link to={"/profile"} className="w-[30px] h-[30px] rounded-full cursor-pointer overflow-hidden">
+									<img src={user?.avatar?.url ? user?.avatar?.url : avatar} alt={user?.name} className="w-full h-full object-cover" />
+								</Link>
+							) : (
+								<HiUserCircle onClick={() => setOpen(true)} size={30} className="cursor-pointer hidden 800px:block dark:text-white text-black" />
+							)
+						}
 					</div>
 				</div>
 			</header>
