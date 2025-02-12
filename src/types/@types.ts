@@ -17,7 +17,10 @@ export interface IUser {
 	_id: string;
 	name: string;
 	email: string;
-	avatar: object;
+	avatar: {
+		url: string
+		public_id: string
+	};
 	role: string;
 	isVerified: boolean;
 	courses: Object[];
