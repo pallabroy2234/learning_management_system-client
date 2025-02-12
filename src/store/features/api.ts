@@ -13,7 +13,7 @@ const server_url = () => {
 	}
 };
 
-const baseURL = server_url();
+export const baseURL = server_url();
 
 
 // Concurrent request handling
@@ -95,7 +95,12 @@ const baseQueryWithReAuth: BaseQueryFn<string | FetchArgs, unknown, {
 
 				} else {
 					// logout user
-					const {data}: any = await baseQuery("/user/logout", api, extraOptions);
+					const {data}: any = await baseQuery({
+						url: "/user/logout",
+						method: "POST",
+						credentials: "include"
+					}, api, extraOptions);
+
 					if (data && data?.success) {
 						api.dispatch(userLoggedOut());
 					}
