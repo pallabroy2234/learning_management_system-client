@@ -1,5 +1,5 @@
 import {api} from "../api.ts";
-import {userLoggedIn, userRegistration} from "./authSlice.ts";
+import {userLoggedIn, userLoggedOut, userRegistration} from "./authSlice.ts";
 import {
 	ActivationRequest,
 	ActivationResponse,
@@ -13,10 +13,14 @@ export const authApi = api.injectEndpoints({
 	endpoints: (builder) => ({
 
 		/**
-		 * @description       Register a new user
-		 * @route             POST /user/register
-		 * @access            Public
-		 * */
+		 * @summary       Register user
+		 * @description   Register a new user account
+		 * @method        POST
+		 * @path          /user/register
+		 * @security      Public
+		 * @param {RegistrationRequest} data - User registration data
+		 * @returns {RegistrationResponse} Registration response object
+		* */
 		register: builder.mutation<RegistrationResponse, RegistrationRequest>({
 			query: (data) => ({
 				url: "/user/register",
@@ -48,10 +52,12 @@ export const authApi = api.injectEndpoints({
 		}),
 
 		/**
-		 * @description       Activate a user account
-		 * @route             POST /user/activate-user
-		 * @access            Public
-		 * */
+		 * @summary       Activate user account
+		 * @description   Activate user account with activation token and code
+		 * @method        POST
+		 * @path          /user/activate-user
+		 * @security      Public
+		* */
 		activation: builder.mutation<ActivationResponse, ActivationRequest>({
 			query: ({activation_token, activation_code}) => ({
 				url: "/user/activate-user",
@@ -65,11 +71,12 @@ export const authApi = api.injectEndpoints({
 		}),
 
 		/**
-		 * @description       Login a user
-		 * @route             POST /user/login
-		 * @access            Public
-		 * @param             email, password
-		 * */
+		 * @summary       User login
+		 * @description   Authenticate user with email and password
+		 * @method        POST
+		 * @path          /user/login
+		 * @security      Public
+		* */
 
 		login: builder.mutation<LoginResponse, ILoginRequest>({
 			query: ({email, password}) => ({
@@ -91,8 +98,73 @@ export const authApi = api.injectEndpoints({
 						}));
 					}
 				} catch (e: any) {
-					// console.log("authApi login error", e.message);
-					console.log("authApi login error", e);
+					dispatch(userLoggedOut());
+					dispatch(api.util.resetApiState());
+				}
+			}
+		}),
+
+		/**
+		 * @summary Get current authenticated user details
+		 * @description Retrieves information about the currently logged-in user
+		 * @method GET
+		 * @path /user/user-info
+		 * @security Cookie-based authentication
+		 * @returns {User} User object with profile data
+		 * @throws {401} Unauthorized - Invalid or expired credentials
+		 */
+		getCurrentUser: builder.query({
+			query: () => ({
+				url: "/user/user-info",
+				method: "GET",
+				credentials: "include",
+				headers: {
+					"Cache-Control": "no-cache",
+					"Pragma": "no-cache"
+				}
+			}),
+			keepUnusedDataFor: 0,
+			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+				try {
+					const {data} = await queryFulfilled;
+					if (data && data.success) {
+						dispatch(userLoggedIn({
+							accessToken: "",
+							user: data?.payload
+						}));
+					}
+				} catch (e: any) {
+					dispatch(userLoggedOut());
+					dispatch(api.util.resetApiState());
+				}
+			}
+		}),
+
+		/**
+		 * @summary Log out current user
+		 * @description Invalidates user session and clears authentication cookies
+		 * @method POST
+		 * @path /user/logout
+		 * @security Cookie-based authentication
+		 * @returns {object} Success status object
+		 * @throws {401} Unauthorized - No active session
+		 */
+		logOut: builder.mutation({
+			query: () => ({
+				url: "/user/logout",
+				method: "POST",
+				credentials: "include"
+			}),
+			invalidatesTags: ["User"],
+			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
+				try {
+					const {data} = await queryFulfilled;
+					if (data && data.success) {
+						dispatch(userLoggedOut());
+						dispatch(api.util.resetApiState());
+					}
+				} catch (e) {
+					console.log("authApi logout error", e);
 				}
 			}
 		})
@@ -100,8 +172,24 @@ export const authApi = api.injectEndpoints({
 	overrideExisting: false
 });
 
+
+/**
+ * Initializes authentication state on app load
+ * @param {any} store - Redux store instance
+ */
+export const initializeAuth = async (store: any) => {
+	try {
+		await store.dispatch(authApi.endpoints.getCurrentUser.initiate(undefined, {forceRefetch: true}));
+	} catch (error: any) {
+		store.dispatch(userLoggedOut());
+		store.dispatch(api.util.resetApiState());
+	}
+};
+
+
 export const {
 	useRegisterMutation,
 	useActivationMutation,
-	useLoginMutation
+	useLoginMutation,
+	useLogOutMutation
 } = authApi;
