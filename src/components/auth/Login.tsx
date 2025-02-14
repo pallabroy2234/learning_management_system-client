@@ -5,12 +5,11 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import {useLoginMutation} from "../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
-import {CustomError, RootState} from "../../types/@types.ts";
+import {CustomError} from "../../types/@types.ts";
 import {ILoginRequest} from "../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
 import {FcGoogle} from "react-icons/fc";
 import {baseURL} from "../../store/features/api.ts";
-import {useSelector} from "react-redux";
 
 
 type Props = {
@@ -28,7 +27,6 @@ const schema = Yup.object().shape({
 const Login: FC<Props> = ({setRoute, setOpen}) => {
 	const [show, setShow] = useState(false);
 	const [userLogin, {isLoading, isSuccess, isError, error, data}] = useLoginMutation();
-	const {user} = useSelector((state: RootState) => state.auth);
 	const {handleSubmit, register, reset, formState: {errors, isValid}} = useForm({
 		defaultValues: {
 			email: "",
@@ -67,12 +65,8 @@ const Login: FC<Props> = ({setRoute, setOpen}) => {
 		}
 	};
 
-	const handleGoogleLogin = () => {
-		if (!user) {
-			window.location.href = `${baseURL}/user/auth/google`;
-		} else {
-			toast.error("You are already logged in");
-		}
+	const handleOAuthLogin = (provider: "google" | "github") => {
+		window.location.href = `${baseURL}/user/auth/${provider}`;
 	};
 
 
@@ -113,8 +107,8 @@ const Login: FC<Props> = ({setRoute, setOpen}) => {
 
 				<h5 className="text-center mt-4 text-[14px] text-black dark:text-white">Or join with</h5>
 				<div className="flex items-center justify-center mt-3 gap-3">
-					<FcGoogle onClick={handleGoogleLogin} size={30} className="cursor-pointer" />
-					<AiFillGithub size={30} className="cursor-pointe" />
+					<FcGoogle onClick={() => handleOAuthLogin("google")} size={30} className="cursor-pointer" />
+					<AiFillGithub onClick={() => handleOAuthLogin("github")} size={30} className="cursor-pointer" />
 				</div>
 				<h5 onClick={() => setRoute("Sign-up")} className="text-center pt-4 font-Poppins text-[14px]">Not have any account?<span className="text-[#2190ff] pl-2 cursor-pointer">Sign up</span>
 				</h5>
