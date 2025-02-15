@@ -20,7 +20,7 @@ export const authApi = api.injectEndpoints({
 		 * @security      Public
 		 * @param {RegistrationRequest} data - User registration data
 		 * @returns {RegistrationResponse} Registration response object
-		* */
+		 * */
 		register: builder.mutation<RegistrationResponse, RegistrationRequest>({
 			query: (data) => ({
 				url: "/user/register",
@@ -57,7 +57,7 @@ export const authApi = api.injectEndpoints({
 		 * @method        POST
 		 * @path          /user/activate-user
 		 * @security      Public
-		* */
+		 * */
 		activation: builder.mutation<ActivationResponse, ActivationRequest>({
 			query: ({activation_token, activation_code}) => ({
 				url: "/user/activate-user",
@@ -76,7 +76,7 @@ export const authApi = api.injectEndpoints({
 		 * @method        POST
 		 * @path          /user/login
 		 * @security      Public
-		* */
+		 * */
 
 		login: builder.mutation<LoginResponse, ILoginRequest>({
 			query: ({email, password}) => ({
@@ -88,6 +88,7 @@ export const authApi = api.injectEndpoints({
 					password
 				}
 			}),
+			invalidatesTags: ["User"],
 			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
 				try {
 					const {data} = await queryFulfilled;
@@ -124,6 +125,7 @@ export const authApi = api.injectEndpoints({
 				}
 			}),
 			keepUnusedDataFor: 0,
+			providesTags: ["User"],
 			onQueryStarted: async (_, {dispatch, queryFulfilled}) => {
 				try {
 					const {data} = await queryFulfilled;
