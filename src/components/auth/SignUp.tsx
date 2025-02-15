@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import {CustomError} from "../../types/@types.ts";
 import {RegistrationRequest} from "../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
+import {baseURL} from "../../store/features/api.ts";
 
 type Props = {
 	setRoute: (route: string) => void;
@@ -61,6 +62,11 @@ const SignUp: FC<Props> = ({setRoute}) => {
 		}
 	};
 
+	// OAuth login
+	const handleOAuthLogin = (provider: "google" | "github") => {
+		window.location.href = `${baseURL}/user/auth/${provider}`;
+	};
+
 
 	return (
 		<div className="w-full ">
@@ -106,8 +112,8 @@ const SignUp: FC<Props> = ({setRoute}) => {
 
 				<h5 className="text-center mt-4 text-[14px] text-black dark:text-white">Or join with</h5>
 				<div className="flex items-center justify-center mt-3 gap-3">
-					<FcGoogle size={30} className="cursor-pointer" />
-					<AiFillGithub size={30} className="cursor-pointe" />
+					<FcGoogle onClick={() => handleOAuthLogin("google")} size={30} className="cursor-pointer" />
+					<AiFillGithub onClick={() => handleOAuthLogin("github")} size={30} className="cursor-pointe" />
 				</div>
 				<h5 onClick={() => setRoute("Login")} className="text-center pt-4 font-Poppins text-[14px]">Already have an account?<span className="text-[#2190ff] pl-2 cursor-pointer">Log In</span>
 				</h5>
