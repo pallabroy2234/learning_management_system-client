@@ -1,4 +1,4 @@
-import {Link, useSearchParams} from "react-router-dom";
+import {Link, Navigate, useSearchParams} from "react-router-dom";
 import {IoWarning} from "react-icons/io5";
 
 const AuthFailure = () => {
@@ -7,6 +7,9 @@ const AuthFailure = () => {
 	const error = queryParams.get("error");
 
 	const message = error ? decodeURIComponent(error) : "Something went wrong. Please try again later";
+	if (!error) {
+		return <Navigate to={"/"} />;
+	}
 	return (
 		<div className="h-screen grid place-items-center">
 			<div className="">

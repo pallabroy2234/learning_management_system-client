@@ -1,4 +1,4 @@
-import {Link, useSearchParams} from "react-router-dom";
+import {Link, Navigate, useSearchParams} from "react-router-dom";
 import {MdVerified} from "react-icons/md";
 
 const AuthSuccess = () => {
@@ -7,6 +7,11 @@ const AuthSuccess = () => {
 	const success = queryParams.get("success");
 
 	const message = success ? decodeURIComponent(success) : "Thank you for logging in";
+
+	if (!success) {
+		return <Navigate to={"/"} />;
+	}
+
 	return (
 		<div className="h-screen grid place-items-center">
 			<div className="">
