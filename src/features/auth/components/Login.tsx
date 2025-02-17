@@ -3,13 +3,13 @@ import {useForm} from "react-hook-form";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
-import {useLoginMutation} from "../../store/features/auth/authApi.ts";
+import {useLoginMutation} from "../../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
-import {CustomError} from "../../types/@types.ts";
-import {ILoginRequest} from "../../store/features/auth/authTypes.ts";
+import {CustomError} from "../../../types/@types.ts";
+import {ILoginRequest} from "../../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
 import {FcGoogle} from "react-icons/fc";
-import {baseURL} from "../../store/features/api.ts";
+import {baseURL} from "../../../store/features/api.ts";
 
 
 type Props = {

@@ -1,7 +1,7 @@
 import {Navigate, Outlet} from "react-router-dom";
 import {FC, ReactElement} from "react";
 import {useSelector} from "react-redux";
-import {RootState} from "../../types/@types.ts";
+import {RootState} from "../types/@types.ts";
 
 
 type Props = {

@@ -1,15 +1,15 @@
 import {FC, useState, useEffect, useRef} from "react";
 import {Link, useLocation} from "react-router-dom";
 import NavItems from "./NavItems.tsx";
-import ThemeSwitcher from "./ThemeSwitcher.tsx";
+import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle, HiUserCircle} from "react-icons/hi";
-import CustomModal from "./CustomModal.tsx";
-import Login from "./auth/Login.tsx";
-import SignUp from "./auth/SignUp.tsx";
-import Verification from "./auth/Verification.tsx";
+import CustomModal from "../shared/CustomModal.tsx";
+import Login from "../../features/auth/components/Login.tsx";
+import SignUp from "../../features/auth/components/SignUp.tsx";
+import Verification from "../../features/auth/components/Verification.tsx";
 import {useSelector} from "react-redux";
-import {RootState} from "../types/@types.ts";
-import avatar from "../../public/avatar.jpg";
+import {RootState} from "../../types/@types.ts";
+import avatar from "../../../public/avatar.jpg";
 
 
 type Props = {

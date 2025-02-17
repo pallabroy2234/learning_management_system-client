@@ -1,12 +1,12 @@
-import SEO from "../components/SEO.tsx";
+import SEO from "../../components/shared/SEO.tsx";
 import {useSelector} from "react-redux";
-import {RootState} from "../types/@types.ts";
+import {RootState} from "../../types/@types.ts";
 import {useState} from "react";
-import SidebarProfile from "../components/SidebarProfile.tsx";
-import {useLogOutMutation} from "../store/features/auth/authApi.ts";
+import SidebarProfile from "../../features/profile/components/SidebarProfile.tsx";
+import {useLogOutMutation} from "../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
-import ProfileInfo from "../components/ProfileInfo.tsx";
+import ProfileInfo from "../../features/profile/components/ProfileInfo.tsx";
 
 
 const Profile = () => {

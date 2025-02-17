@@ -1,5 +1,5 @@
-import Hero from "../components/Hero.tsx";
-import SEO from "../components/SEO.tsx";
+import Hero from "../../features/home/components/Hero.tsx";
+import SEO from "../../components/shared/SEO.tsx";
 
 
 const Home = () => {
