@@ -1,16 +1,25 @@
 import {CustomError, RootState} from "../../../types/@types.ts";
 import defaultAvatar from "../../../../public/avatar.jpg";
-import {ChangeEvent, FC, useEffect, useState} from "react";
+import {ChangeEvent, useEffect, useState} from "react";
 import {FaEdit} from "react-icons/fa";
 import ImageCropModal from "./ImageCropModal.tsx";
-import {useUploadProfileImageMutation} from "../../../store/features/user/userApi.ts";
+import {useUpdateUserInfoMutation, useUploadProfileImageMutation} from "../../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
+import {useForm} from "react-hook-form";
+import * as yup from "yup";
+import {yupResolver} from "@hookform/resolvers/yup";
+import {ThreeDots} from "react-loader-spinner";
+import {useSelector} from "react-redux";
 
-type Props = {
-	user: RootState["auth"]["user"];
-}
 
-const ProfileInfo: FC<Props> = ({user}) => {
+const userUpdateSchema = yup.object().shape({
+	name: yup.string().required("Name is required"),
+	email: yup.string().optional()
+});
+
+
+const ProfileInfo = () => {
+	const {user} = useSelector((state: RootState) => state.auth);
 	const [showModal, setShowModal] = useState(false);
 	const [error, setError] = useState("");
 	const [imageSrc, setImageSrc] = useState("");
@@ -21,10 +30,60 @@ const ProfileInfo: FC<Props> = ({user}) => {
 		error: uploadError,
 		data
 	}] = useUploadProfileImageMutation();
+	const [updateInfo, {
+		isLoading: isUpdateLoading,
+		isSuccess: isUpdateSuccess,
+		isError: isUpdateError,
+		error: updateError,
+		data: updateData
+	}] = useUpdateUserInfoMutation();
 
-	const errors = {
-		email: false
+
+	const {handleSubmit, register, reset, formState: {errors, isValid, isDirty, isSubmitting}} = useForm({
+		values: {
+			name: user?.name || "",
+			email: user?.email
+		},
+
+		resolver: yupResolver(userUpdateSchema),
+		mode: "onChange"
+	});
+
+
+	/**
+	 * @summary Handles form submission
+	 * @description Updates user profile info
+	 * @param {Object} data - Form data
+	 * @param {string} data.name - User's full name
+	 *
+	 * */
+	const onSubmit = async (data: {name: string, email?: string}) => {
+		const {name} = data;
+		await updateInfo({name});
 	};
+
+	/**
+	 * @summary Display success or error toast messages
+	 * @description Displays success or error toast messages when user profile is updated
+	 * @param {boolean} isUpdateSuccess - Update success status
+	 * @param {boolean} isUpdateError - Update error status
+	 * @param {Object} updateData - Update success data
+	 * @param {Object} updateError - Update error data
+	 * */
+	useEffect(() => {
+		if (isUpdateSuccess) {
+			const message = updateData?.message || "Profile updated successfully";
+			toast.success(message);
+			reset();
+		}
+		if (isUpdateError) {
+			if ("data" in updateError) {
+				const err = updateError as CustomError;
+				toast.error(err?.data?.message);
+			}
+		}
+	}, [isUpdateError, isUpdateSuccess]);
+
 
 	/**
 	 * @summary Handles image selection from file input
@@ -130,23 +189,31 @@ const ProfileInfo: FC<Props> = ({user}) => {
 			<br />
 
 			<div className="w-full pl-6 800px:pl-10">
-				<form>
+				<form onSubmit={handleSubmit(onSubmit)}>
 					<div className="800px:w-[50%] mx-auto  pb-4 flex flex-col gap-4">
 						<div className="flex flex-col gap-2">
 							<label htmlFor="name" className="text-[14px] 500px:text-[16px] font-Poppins text-black dark:text-white">Full Name</label>
-							<input type="text" id="name" placeholder="Your Full Name" className={`${errors?.email ? "border-red-500" : "dark:border-white border-black"} w-full rounded text-[14px] 500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
-							{/*{errors?.email &&*/}
-							{/*	<span className="text-red-500 text-[13px] 500px:text-[14px] font-Poppins">{errors?.email?.message}</span>}*/}
+							<input {...register("name")} type="text" id="name" placeholder="Your Full Name" className={`w-full rounded text-[14px] 500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
+							{errors?.name &&
+								<span className="text-red-500 text-[13px] font-Poppins">{errors.name.message}</span>}
 						</div>
 
 						<div className="flex flex-col gap-2">
 							<label htmlFor="email" className="text-[14px] 500px:text-[16px] font-Poppins text-black dark:text-white">Email Address</label>
-							<input type="text" id="name" readOnly={true} placeholder="Your Email" className={`${errors?.email ? "border-red-500" : "dark:border-white border-black"} w-full rounded text-[14px]  500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
+							<input {...register("email")} readOnly={true} type="text" id="name" placeholder="Your Email" className={`w-full rounded text-[14px] cursor-not-allowed 500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
 						</div>
 
-						<div className="w-full">
-							<button type="submit" className="px-12 py-1 border border-black dark:border-white rounded">
-								Update
+
+						<div className="w-full flex justify-center items-center">
+							<button type="submit" disabled={!isValid || !isDirty || isSubmitting}
+									className={`w-full flex justify-center items-center py-2 text-[13px] 500px:text-[16px] font-Poppins  rounded  transition-all duration-300 ease-in-out disabled:cursor-not-allowed ${
+										isValid
+											? "bg-blue-500 border-blue-500 text-white hover:bg-blue-600 hover:border-blue-600 shadow-md"
+											: "bg-blue-300 border-blue-400 text-blue-100 cursor-not-allowed"
+									}`}
+							>
+								{isUpdateLoading ?
+									<ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Update"}
 							</button>
 						</div>
 					</div>
@@ -156,3 +223,6 @@ const ProfileInfo: FC<Props> = ({user}) => {
 	);
 };
 export default ProfileInfo;
+
+
+// ${errors?.email ? "border-red-500" : "dark:border-white border-black"}

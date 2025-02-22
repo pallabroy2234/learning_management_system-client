@@ -66,7 +66,7 @@ const Profile = () => {
 					{
 						active === "account" && (
 							<div className="w-full h-full bg-transparent mt-[10px]">
-								<ProfileInfo user={user} />
+								<ProfileInfo />
 							</div>
 						)
 					}
