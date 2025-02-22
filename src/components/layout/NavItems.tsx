@@ -1,46 +1,46 @@
 import {FC} from "react";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 
 export const navItems = [
 	{
 		name: "Home",
-		url: "/"
+		path: "/"
 	},
 	{
 		name: "Courses",
-		url: "/courses"
+		path: "/courses"
 	},
 	{
 		name: "About",
-		url: "/about"
+		path: "/about"
 	},
 	{
 		name: "Policy",
-		url: "/policy"
+		path: "/policy"
 	},
 	{
 		name: "FAQ",
-		url: "/faq"
+		path: "/faq"
 	}
 ];
 
 
 type Props = {
-	activeItem: number;
 	isMobile: boolean;
 }
 
 
-const NavItems: FC<Props> = ({activeItem, isMobile}) => {
+const NavItems: FC<Props> = ({isMobile}) => {
+	const {pathname} = useLocation();
 	return (
 		<div>
 			<div className="hidden 800px:flex">
 				{
 					navItems && navItems.map((navItem, index) => (
-						<Link to={navItem.url} key={index}>
-                          <span className={`${activeItem === index ? "dark:text-[#37a39a] text-[crimson]" : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>
-							  {navItem.name}
-						  </span>
+						<Link to={navItem.path} key={index}>
+							<span className={`${pathname === navItem.path ? "dark:text-[#37a39a] text-[crimson]" : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>
+								{navItem?.name}
+							</span>
 						</Link>
 
 					))
@@ -58,8 +58,8 @@ const NavItems: FC<Props> = ({activeItem, isMobile}) => {
 						<div className="flex flex-col gap-6">
 							{
 								navItems && navItems.map((navItem, index) => (
-									<Link to={navItem.url} key={index} className="">
-                          <span className={`${activeItem === index ? "dark:text-[#37a39a] text-[crimson]" : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>
+									<Link to={navItem.path} key={index} className="">
+                          <span className={`${pathname === navItem?.path ? "dark:text-[#37a39a] text-[crimson]" : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>
 							  {navItem.name}
 						  </span>
 									</Link>

@@ -2,7 +2,7 @@ import {FC, useState, useEffect, useRef} from "react";
 import {Link, useLocation} from "react-router-dom";
 import NavItems from "./NavItems.tsx";
 import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
-import {HiOutlineMenuAlt3, HiOutlineUserCircle, HiUserCircle} from "react-icons/hi";
+import {HiOutlineMenuAlt3, HiOutlineUserCircle} from "react-icons/hi";
 import CustomModal from "../shared/CustomModal.tsx";
 import Login from "../../features/auth/components/Login.tsx";
 import SignUp from "../../features/auth/components/SignUp.tsx";
@@ -69,7 +69,7 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 
 					{/* Navigation */}
 					<div className="flex items-center gap-4">
-						<NavItems activeItem={activeItem} isMobile={false} />
+						<NavItems isMobile={false} />
 						<ThemeSwitcher />
 
 						{/* Mobile Menu */}
@@ -78,15 +78,17 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 						</div>
 
 						{/* User Profile */}
-						{
-							user ? (
-								<Link to={"/profile"} className="w-[30px] h-[30px] rounded-full cursor-pointer overflow-hidden">
-									<img src={user?.avatar?.url ? user?.avatar?.url : avatar} alt={user?.name} className="w-full h-full object-cover" />
-								</Link>
-							) : (
-								<HiUserCircle onClick={() => setOpen(true)} size={30} className="cursor-pointer hidden 800px:block dark:text-white text-black" />
-							)
-						}
+						<div className={`800px:block hidden w-[30px] h-[30px] rounded-full overflow-hidden ${pathname === "/profile" ? "ring  dark:ring-[#37a39a]  ring-[crimson]" : "ring-0"}`}>
+							{
+								user ? (
+									<Link to={"/profile"} className={`w-[30px] h-[30px] rounded-full cursor-pointer overflow-hidden`}>
+										<img src={user?.avatar?.url ? user?.avatar?.url : avatar} alt={user?.name} className="w-full h-full object-cover" />
+									</Link>
+								) : (
+									<HiOutlineUserCircle onClick={() => setOpen(true)} size={30} className="cursor-pointer hidden 800px:block dark:text-white text-black" />
+								)
+							}
+						</div>
 					</div>
 				</div>
 			</header>
@@ -103,8 +105,18 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 							<Link onClick={() => setOpenSidebar(false)} to="/about" className={`${pathname === "/about" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>About</Link>
 							<Link onClick={() => setOpenSidebar(false)} to="/policy" className={`${pathname === "/policy" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>Policy</Link>
 							<Link onClick={() => setOpenSidebar(false)} to="/faq" className={`${pathname === "/faq" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px] px-6 font-Poppins font-[400]`}>FAQ</Link>
-							<div onClick={() => setOpenSidebar(false)}>
-								<HiOutlineUserCircle onClick={() => setOpen(true)} className="cursor-pointer ml-5  text-black dark:text-white" size={25} />
+							<div className="px-6" onClick={() => setOpenSidebar(false)}>
+								{
+									user ? (
+										<Link to={"/profile"} className={`${pathname === "/profile" ? "dark:text-[#37a39a] text-[crimson] " : "dark:text-white text-black"} text-[18px]  font-Poppins font-[400]`}>
+											Profile
+										</Link>
+									) : (
+										<span className="">
+											<HiOutlineUserCircle onClick={() => setOpen(true)} size={25} className="cursor-pointer  dark:text-white text-black" />
+										</span>
+									)
+								}
 							</div>
 						</div>
 						<p className={`px-6 my-10`}>© 2025 Copyright: Pallab Roy Tushar</p>
