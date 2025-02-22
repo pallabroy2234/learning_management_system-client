@@ -1,4 +1,5 @@
 import {api} from "../api.ts";
+import {IResponse, IUpdateUserInfoRequest} from "./userTypes.ts";
 
 
 export const userApi = api.injectEndpoints({
@@ -16,7 +17,24 @@ export const userApi = api.injectEndpoints({
 				url: "/user/update-avatar",
 				method: "POST",
 				body: data,
-				credentials: "include"
+				credentials: "include" as RequestCredentials
+			}),
+			invalidatesTags: ["User"]
+		}),
+
+		/**
+		 * @summary       Update user info
+		 * @description   Update user info
+		 * @method        PUT
+		 * @path          /user/update-info
+		 * @security      Private
+		 * */
+		updateUserInfo: builder.mutation<IResponse, IUpdateUserInfoRequest>({
+			query: (data) => ({
+				url: "/user/update-info",
+				method: "PUT",
+				credentials: "include" as RequestCredentials,
+				body: data
 			}),
 			invalidatesTags: ["User"]
 		})
@@ -24,4 +42,4 @@ export const userApi = api.injectEndpoints({
 });
 
 
-export const {useUploadProfileImageMutation} = userApi;
+export const {useUploadProfileImageMutation, useUpdateUserInfoMutation} = userApi;
