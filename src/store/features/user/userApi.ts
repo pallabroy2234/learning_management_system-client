@@ -1,7 +1,7 @@
 import {api} from "../api.ts";
 
 
-export const uerApi = api.injectEndpoints({
+export const userApi = api.injectEndpoints({
 	endpoints: (builder) => ({
 
 		/**
@@ -24,4 +24,4 @@ export const uerApi = api.injectEndpoints({
 });
 
 
-export const {useUploadProfileImageMutation} = uerApi;
+export const {useUploadProfileImageMutation} = userApi;
