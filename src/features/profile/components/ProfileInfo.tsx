@@ -39,7 +39,7 @@ const ProfileInfo = () => {
 	}] = useUpdateUserInfoMutation();
 
 
-	const {handleSubmit, register, reset, formState: {errors, isValid, isDirty, isSubmitting}} = useForm({
+	const {handleSubmit, register, formState: {errors, isValid, isDirty, isSubmitting}} = useForm({
 		values: {
 			name: user?.name || "",
 			email: user?.email
@@ -74,7 +74,6 @@ const ProfileInfo = () => {
 		if (isUpdateSuccess) {
 			const message = updateData?.message || "Profile updated successfully";
 			toast.success(message);
-			reset();
 		}
 		if (isUpdateError) {
 			if ("data" in updateError) {
