@@ -5,11 +5,11 @@ import {yupResolver} from "@hookform/resolvers/yup";
 import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import {useLoginMutation} from "../../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
-import {CustomError} from "../../../types/@types.ts";
 import {ILoginRequest} from "../../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
 import {FcGoogle} from "react-icons/fc";
 import {baseURL} from "../../../store/features/api.ts";
+import {CustomError} from "../../../types/@types.ts";
 
 
 type Props = {
@@ -54,15 +54,10 @@ const Login: FC<Props> = ({setRoute, setOpen}) => {
 
 	// Form handle submit
 	const onSubmit = async (data: ILoginRequest) => {
-		try {
-			await userLogin({
-				email: data.email,
-				password: data.password
-			});
-
-		} catch (e: any) {
-			console.log("error", e);
-		}
+		await userLogin({
+			email: data.email,
+			password: data.password
+		});
 	};
 
 	const handleOAuthLogin = (provider: "google" | "github") => {
