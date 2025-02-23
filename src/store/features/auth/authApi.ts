@@ -80,9 +80,9 @@ export const authApi = api.injectEndpoints({
 
 		login: builder.mutation<LoginResponse, ILoginRequest>({
 			query: ({email, password}) => ({
-				url: "user/login",
+				url: "/user/login",
 				method: "POST",
-				credentials: "include",
+				credentials: "include" as RequestCredentials,
 				body: {
 					email,
 					password
@@ -100,7 +100,14 @@ export const authApi = api.injectEndpoints({
 					}
 				} catch (e: any) {
 					dispatch(userLoggedOut());
-					dispatch(api.util.resetApiState());
+
+					/**
+					 * @summary      if dispatch(api.util.resetApiState()) is on than my error are not catch in mutation example
+					 *               const [login, {isError,error,data}] = useLoginMutation()
+					 *               isError, error and data is undefined if I'm using here  dispatch(api.util.resetApiState())
+					 *               so, that's why this is comment ... Only use in Logout function
+					 * */
+					// dispatch(api.util.resetApiState());
 				}
 			}
 		}),
@@ -137,7 +144,7 @@ export const authApi = api.injectEndpoints({
 					}
 				} catch (e: any) {
 					dispatch(userLoggedOut());
-					dispatch(api.util.resetApiState());
+					// dispatch(api.util.resetApiState());
 				}
 			}
 		}),
