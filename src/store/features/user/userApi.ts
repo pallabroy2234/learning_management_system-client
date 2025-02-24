@@ -1,5 +1,10 @@
 import {api} from "../api.ts";
-import {ICreatePasswordSocialAuthRequest, IResponse, IUpdateUserInfoRequest} from "./userTypes.ts";
+import {
+	ICreatePasswordSocialAuthRequest,
+	IResponse,
+	IUpdatePasswordRequest,
+	IUpdateUserInfoRequest,
+} from "./userTypes.ts";
 
 export const userApi = api.injectEndpoints({
 	endpoints: (builder) => ({
@@ -56,6 +61,24 @@ export const userApi = api.injectEndpoints({
 			}),
 			invalidatesTags: ["User"],
 		}),
+
+		/**
+		 * @summary            Update password
+		 * @description        Update password
+		 * @method             PUT
+		 * @path               /user/update-password
+		 * @security           Private
+		 * @invalidateTags     User
+		* */
+		updatePassword: builder.mutation<IResponse, IUpdatePasswordRequest>({
+			query: (data) => ({
+				url: "/user/update-password",
+				method: "PUT",
+				credentials: "include" as RequestCredentials,
+				body: data,
+			}),
+			invalidatesTags: ["User"],
+		}),
 	}),
 });
 
@@ -63,4 +86,5 @@ export const {
 	useUploadProfileImageMutation,
 	useUpdateUserInfoMutation,
 	useCreatePasswordSocialAuthMutation,
+	useUpdatePasswordMutation,
 } = userApi;
