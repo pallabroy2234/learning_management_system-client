@@ -8,7 +8,7 @@ const Password = () => {
 
 	return (
 		<div className='w-full pl-7 px-2 800px:px-5 800px:pl-0'>
-			<h1 className='block text-[25px] 800px:text-[30px] font-Poppins text-center font-[500] text-[#fff] pb-2'>
+			<h1 className='block text-[25px] 800px:text-[30px] font-Poppins text-center font-[500] dark:text-[#fff]  pb-2'>
 				{(user?.password === null || user?.password === "") && "Create Password"}
 				{user?.password === undefined && "Change Password"}
 			</h1>
