@@ -7,3 +7,14 @@ export interface IResponse {
 	message: string;
 	payload?: any;
 }
+
+export interface ICreatePasswordSocialAuthRequest {
+	newPassword: string;
+	confirmPassword: string;
+}
+
+
+export interface IUpdatePasswordRequest {
+	oldPassword: string;
+	newPassword: string;
+}
