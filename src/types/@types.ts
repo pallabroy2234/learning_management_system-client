@@ -9,17 +9,16 @@ export type CustomError = {
 	};
 };
 
-
-export type RootState = ReturnType<typeof store.getState>
-
+export type RootState = ReturnType<typeof store.getState>;
 
 export interface IUser {
 	_id: string;
 	name: string;
 	email: string;
+	password?: string;
 	avatar: {
-		url: string
-		public_id: string
+		url: string;
+		public_id: string;
 	};
 	role: string;
 	isVerified: boolean;
