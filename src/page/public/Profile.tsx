@@ -7,6 +7,7 @@ import {useLogOutMutation} from "../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
 import {useNavigate} from "react-router-dom";
 import ProfileInfo from "../../features/profile/components/ProfileInfo.tsx";
+import ChangePassword from "../../features/profile/components/ChangePassword.tsx";
 
 
 const Profile = () => {
@@ -70,6 +71,15 @@ const Profile = () => {
 							</div>
 						)
 					}
+
+					{
+						active === "password" && (
+							<div className="w-full h-full bg-transparent mt-[10px]">
+								<ChangePassword />
+							</div>
+						)
+					}
+
 				</div>
 			</div>
 		);
