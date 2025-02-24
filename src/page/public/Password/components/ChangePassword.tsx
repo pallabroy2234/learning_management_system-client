@@ -1,12 +1,12 @@
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
 import {ThreeDots} from "react-loader-spinner";
-import {CustomError} from "../../../types/@types.ts";
+import {CustomError} from "../../../../types/@types.ts";
 import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {IUpdatePasswordRequest} from "../../../store/features/user/userTypes.ts";
-import {useUpdatePasswordMutation} from "../../../store/features/user/userApi.ts";
+import {IUpdatePasswordRequest} from "../../../../store/features/user/userTypes.ts";
+import {useUpdatePasswordMutation} from "../../../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
 
 const changePasswordSchema = yup.object().shape({

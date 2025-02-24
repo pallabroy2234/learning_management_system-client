@@ -1,12 +1,12 @@
 import {FC, KeyboardEvent, useEffect, useState} from "react";
 import {SubmitHandler, useForm} from "react-hook-form";
 import {VscWorkspaceTrusted} from "react-icons/vsc";
-import {useActivationMutation} from "../../../store/features/auth/authApi.ts";
 import {useSelector} from "react-redux";
-import {CustomError, RootState} from "../../../types/@types.ts";
 import toast from "react-hot-toast";
-import {ActivationRequest} from "../../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
+import {CustomError, RootState} from "../../types/@types.ts";
+import {useActivationMutation} from "../../store/features/auth/authApi.ts";
+import {ActivationRequest} from "../../store/features/auth/authTypes.ts";
 
 type Props = {
 	setRoute: (route: string) => void;

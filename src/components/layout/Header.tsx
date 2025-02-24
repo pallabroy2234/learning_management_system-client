@@ -4,12 +4,12 @@ import NavItems from "./NavItems.tsx";
 import ThemeSwitcher from "../ui/ThemeSwitcher.tsx";
 import {HiOutlineMenuAlt3, HiOutlineUserCircle} from "react-icons/hi";
 import CustomModal from "../shared/CustomModal.tsx";
-import Login from "../../features/auth/components/Login.tsx";
-import SignUp from "../../features/auth/components/SignUp.tsx";
-import Verification from "../../features/auth/components/Verification.tsx";
 import {useSelector} from "react-redux";
 import {RootState} from "../../types/@types.ts";
 import avatar from "../../../public/avatar.jpg";
+import Login from "../auth/Login.tsx";
+import SignUp from "../auth/SignUp.tsx";
+import Verification from "../auth/Verification.tsx";
 
 
 type Props = {

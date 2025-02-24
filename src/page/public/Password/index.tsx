@@ -1,7 +1,7 @@
 import {useSelector} from "react-redux";
-import {RootState} from "../../types/@types.ts";
-import CreatePassword from "../../features/password/components/CreatePassword.tsx";
-import ChangePassword from "../../features/password/components/ChangePassword.tsx";
+import {RootState} from "../../../types/@types.ts";
+import CreatePassword from "./components/CreatePassword.tsx";
+import ChangePassword from "./components/ChangePassword.tsx";
 
 const Password = () => {
 	const {user} = useSelector((state: RootState) => state.auth);

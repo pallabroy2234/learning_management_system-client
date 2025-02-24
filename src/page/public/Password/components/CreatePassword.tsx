@@ -2,12 +2,12 @@ import {AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
 import {ThreeDots} from "react-loader-spinner";
 import {useEffect, useState} from "react";
 import {useForm} from "react-hook-form";
-import {ICreatePasswordSocialAuthRequest} from "../../../store/features/user/userTypes.ts";
+import {ICreatePasswordSocialAuthRequest} from "../../../../store/features/user/userTypes.ts";
 import * as yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {useCreatePasswordSocialAuthMutation} from "../../../store/features/user/userApi.ts";
+import {useCreatePasswordSocialAuthMutation} from "../../../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
-import {CustomError} from "../../../types/@types.ts";
+import {CustomError} from "../../../../types/@types.ts";
 
 const createPasswordSchema = yup.object().shape({
 	newPassword: yup

@@ -3,32 +3,32 @@ import {useForm} from "react-hook-form";
 import * as Yup from "yup";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {AiFillGithub, AiOutlineEye, AiOutlineEyeInvisible} from "react-icons/ai";
-import {FcGoogle} from "react-icons/fc";
-import {useRegisterMutation} from "../../../store/features/auth/authApi.ts";
 import toast from "react-hot-toast";
-import {CustomError} from "../../../types/@types.ts";
-import {RegistrationRequest} from "../../../store/features/auth/authTypes.ts";
 import {ThreeDots} from "react-loader-spinner";
-import {baseURL} from "../../../store/features/api.ts";
+import {FcGoogle} from "react-icons/fc";
+import {useLoginMutation} from "../../store/features/auth/authApi.ts";
+import {CustomError} from "../../types/@types.ts";
+import {ILoginRequest} from "../../store/features/auth/authTypes.ts";
+import {baseURL} from "../../store/features/api.ts";
+
 
 type Props = {
 	setRoute: (route: string) => void;
+	setOpen: (open: boolean) => void;
 }
 
 
 const schema = Yup.object().shape({
-	name: Yup.string().required("Please enter your name").min(3, "Name must be at least 3 characters"),
 	email: Yup.string().required("Please enter your email").email("Invalid email"),
 	password: Yup.string().required("Please enter your password").min(6, "Password must be at least 6 characters")
 });
 
 
-const SignUp: FC<Props> = ({setRoute}) => {
+const Login: FC<Props> = ({setRoute, setOpen}) => {
 	const [show, setShow] = useState(false);
-	const [userRegister, {isLoading, isError, error, isSuccess, data}] = useRegisterMutation();
+	const [userLogin, {isLoading, isSuccess, isError, error, data}] = useLoginMutation();
 	const {handleSubmit, register, reset, formState: {errors, isValid}} = useForm({
 		defaultValues: {
-			name: "",
 			email: "",
 			password: ""
 		},
@@ -36,33 +36,30 @@ const SignUp: FC<Props> = ({setRoute}) => {
 		mode: "all"
 	});
 
-
 	useEffect(() => {
 		if (isSuccess) {
-			const message = data?.message;
+			const message = data?.message || "Login successful";
 			toast.success(message);
+			setOpen(false);
 			reset();
-			setRoute("Verification");
 		}
 		if (isError) {
 			if ("data" in error) {
 				const err = error as CustomError;
-				toast.error(err?.data?.message);
+				toast.error(err?.data.message);
 			}
 		}
-	}, [isSuccess, isError]);
+	}, [isError, isSuccess]);
 
 
 	// Form handle submit
-	const onSubmit = async (user: RegistrationRequest) => {
-		try {
-			await userRegister(user).unwrap();
-		} catch (err: any) {
-			console.log("error", err);
-		}
+	const onSubmit = async (data: ILoginRequest) => {
+		await userLogin({
+			email: data.email,
+			password: data.password
+		});
 	};
 
-	// OAuth login
 	const handleOAuthLogin = (provider: "google" | "github") => {
 		window.location.href = `${baseURL}/user/auth/${provider}`;
 	};
@@ -71,16 +68,9 @@ const SignUp: FC<Props> = ({setRoute}) => {
 	return (
 		<div className="w-full ">
 			<h1 className="text-[17px] 500px:text-[20px]  text-black dark:text-white font-[500] font-Poppins text-center py-2">
-				Join with E-Learning
+				Login with E-Learning
 			</h1>
 			<form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 mt-3">
-				<div className="flex flex-col gap-3">
-					<label htmlFor="name" className="text-[14px] 500px:text-[16px] font-Poppins text-black dark:text-white">Enter your Name</label>
-					<input {...register("name")} type="text" id="name" placeholder="John Doe" className={`${errors?.name ? "border-red-500" : "dark:border-blue-500 border-black"} w-full rounded text-[14px] 500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
-					{errors?.name &&
-						<span className="text-red-500 text-[13px] 500px:text-[14px] font-Poppins">{errors?.name?.message}</span>}
-				</div>
-
 				<div className="flex flex-col gap-3">
 					<label htmlFor="email" className="text-[14px] 500px:text-[16px] font-Poppins text-black dark:text-white">Enter your Email</label>
 					<input {...register("email")} type="email" id="email" placeholder="loginemail@gmail.com" className={`${errors?.email ? "border-red-500" : "dark:border-blue-500 border-black"} w-full rounded text-[14px] 500px:text-base text-black dark:text-white bg-transparent border h-[40px] px-2 outline-none font-Poppins `} />
@@ -106,20 +96,20 @@ const SignUp: FC<Props> = ({setRoute}) => {
 									: "bg-blue-300 border-blue-400 text-blue-100 cursor-not-allowed"
 							}`}
 					>
-						{isLoading ? <ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Sign Up"}
+						{isLoading ? <ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Log in"}
 					</button>
 				</div>
 
 				<h5 className="text-center mt-4 text-[14px] text-black dark:text-white">Or join with</h5>
 				<div className="flex items-center justify-center mt-3 gap-3">
 					<FcGoogle onClick={() => handleOAuthLogin("google")} size={30} className="cursor-pointer" />
-					<AiFillGithub onClick={() => handleOAuthLogin("github")} size={30} className="cursor-pointe" />
+					<AiFillGithub onClick={() => handleOAuthLogin("github")} size={30} className="cursor-pointer" />
 				</div>
-				<h5 onClick={() => setRoute("Login")} className="text-center pt-4 font-Poppins text-[14px]">Already have an account?<span className="text-[#2190ff] pl-2 cursor-pointer">Log In</span>
+				<h5 onClick={() => setRoute("Sign-up")} className="text-center pt-4 font-Poppins text-[14px]">Not have any account?<span className="text-[#2190ff] pl-2 cursor-pointer">Sign up</span>
 				</h5>
 			</form>
 			<br />
 		</div>
 	);
 };
-export default SignUp;
+export default Login;

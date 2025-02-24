@@ -1,7 +1,7 @@
 import {FC, SyntheticEvent, useRef, useState} from "react";
 import ReactCrop, {centerCrop, Crop, makeAspectCrop, PixelCrop} from "react-image-crop";
-import canvasPreview from "../../../lib/canvasPreview.ts";
-import Loader from "../../../components/shared/Loader.tsx";
+import canvasPreview from "../../../../lib/canvasPreview.ts";
+import Loader from "../../../../components/shared/Loader.tsx";
 
 
 type Props = {

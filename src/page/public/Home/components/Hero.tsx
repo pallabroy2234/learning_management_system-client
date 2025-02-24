@@ -7,7 +7,7 @@ const Hero = () => {
 			<div className="grid grid-cols-1 1000px:grid-cols-2 h-screen 1000px:gap-2">
 				<div className="relative flex 1000px:items-center 1000px:justify-start justify-center items-center">
 					<div className="relative flex justify-center items-center 1500px:w-[600px] 1500px:h-[600px] 1200px:w-[500px] 1200px:h-[500px] 1000px:h-[400px] 1000px:w-[400px] 700px:w-[500px] 700px:h-[500px] 500px:w-[400px] 500px:h-[400px] w-[300px] h-[300px]  before:content-[''] before:absolute before:inset-0 before:rounded-full before:bg-gradient-to-r before:from-blue-500 before:to-transparent before:animate-opacityChange">
-						<img src="../../../../public/hero.png" alt="" className="1500px:max-w-[70%] 1200px:max-w-[60%] 1000px:max-w-[60%] max-w-[60%] object-contain relative z-10" />
+						<img src="../../../../../public/hero.png" alt="" className="1500px:max-w-[70%] 1200px:max-w-[60%] 1000px:max-w-[60%] max-w-[60%] object-contain relative z-10" />
 					</div>
 				</div>
 
@@ -38,9 +38,9 @@ const Hero = () => {
 
 					<div className="sm:flex sm:items-center sm:justify-center sm:gap-4 gap-9">
 						<div className="flex items-center">
-							<img src="../../../../public/1.jpg" alt="user1" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] z-[1]" />
-							<img src="../../../../public/4.jpeg" alt="user2" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] -ml-3 z-[2]" />
-							<img src="../../../../public/3.jpg" alt="user3" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] -ml-3 z-[3]" />
+							<img src="../../../../../public/1.jpg" alt="user1" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] z-[1]" />
+							<img src="../../../../../public/4.jpeg" alt="user2" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] -ml-3 z-[2]" />
+							<img src="../../../../../public/3.jpg" alt="user3" className="rounded-full w-[50px] h-[50px] object-cover ring-[3px]  dark:ring-white ring-[#39c1f3] -ml-3 z-[3]" />
 						</div>
 						<div className="mt-5 sm:mt-0">
 							<p className="font-Josefin dark:text-[#edfff4] text-[#000000b3]  text-[18px] font-[600]">
