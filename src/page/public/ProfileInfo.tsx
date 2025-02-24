@@ -1,9 +1,9 @@
-import {CustomError, RootState} from "../../../types/@types.ts";
-import defaultAvatar from "../../../../public/avatar.jpg";
+import {CustomError, RootState} from "../../types/@types.ts";
+import defaultAvatar from "../../../public/avatar.jpg";
 import {ChangeEvent, useEffect, useState} from "react";
 import {FaEdit} from "react-icons/fa";
-import ImageCropModal from "./ImageCropModal.tsx";
-import {useUpdateUserInfoMutation, useUploadProfileImageMutation} from "../../../store/features/user/userApi.ts";
+import ImageCropModal from "../../features/profile/components/ImageCropModal.tsx";
+import {useUpdateUserInfoMutation, useUploadProfileImageMutation} from "../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
 import {useForm} from "react-hook-form";
 import * as yup from "yup";
