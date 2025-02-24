@@ -1,10 +1,8 @@
 import {api} from "../api.ts";
-import {IResponse, IUpdateUserInfoRequest} from "./userTypes.ts";
-
+import {ICreatePasswordSocialAuthRequest, IResponse, IUpdateUserInfoRequest} from "./userTypes.ts";
 
 export const userApi = api.injectEndpoints({
 	endpoints: (builder) => ({
-
 		/**
 		 * @summary       Upload user profile image
 		 * @description   Upload user profile image
@@ -17,9 +15,9 @@ export const userApi = api.injectEndpoints({
 				url: "/user/update-avatar",
 				method: "POST",
 				body: data,
-				credentials: "include" as RequestCredentials
+				credentials: "include" as RequestCredentials,
 			}),
-			invalidatesTags: ["User"]
+			invalidatesTags: ["User"],
 		}),
 
 		/**
@@ -34,12 +32,35 @@ export const userApi = api.injectEndpoints({
 				url: "/user/update-info",
 				method: "PUT",
 				credentials: "include" as RequestCredentials,
-				body: data
+				body: data,
 			}),
-			invalidatesTags: ["User"]
-		})
-	})
+			invalidatesTags: ["User"],
+		}),
+
+		/**
+		 * @summary       Create password social auth
+		 * @description   Create password social auth
+		 * @method        POST
+		 * @path          /user/create-password
+		 * @security      Private
+		 * */
+		createPasswordSocialAuth: builder.mutation<IResponse, ICreatePasswordSocialAuthRequest>({
+			query: ({newPassword, confirmPassword}) => ({
+				url: "/user/create-password",
+				method: "POST",
+				credentials: "include" as RequestCredentials,
+				body: {
+					newPassword,
+					confirmPassword,
+				},
+			}),
+			invalidatesTags: ["User"],
+		}),
+	}),
 });
 
-
-export const {useUploadProfileImageMutation, useUpdateUserInfoMutation} = userApi;
+export const {
+	useUploadProfileImageMutation,
+	useUpdateUserInfoMutation,
+	useCreatePasswordSocialAuthMutation,
+} = userApi;
