@@ -5,6 +5,7 @@ import {initializeAuth} from "./store/features/auth/authApi.ts";
 import Loader from "./components/shared/Loader.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import "react-image-crop/dist/ReactCrop.css";
+import DashboardLayout from "./components/layout/dashbaord/DashboardLayout.tsx";
 
 
 // * Import all Route components
@@ -15,7 +16,7 @@ const AuthFailure = lazy(() => import("./page/public/AuthFailure"));
 const AuthSuccess = lazy(() => import("./page/public/AuthSuccess"));
 const ProfileInfo = lazy(() => import("./page/public/ProfileInfo"));
 const Password = lazy(() => import("./page/public/Password"));
-
+const Dashboard = lazy(() => import("./page/admin/dashboard"));
 
 const App = () => {
 	const [loader, setLoader] = useState<boolean>(true);
@@ -54,7 +55,13 @@ const App = () => {
 							</Route>
 						</Route>
 
-						{/*	 Dashboard */}
+
+						{/*	 Only admin can access here */}
+						<Route path="admin/dashboard" element={<DashboardLayout />}>
+							<Route element={<ProtectedRoute adminRoute={true} />}>
+								<Route index={true} element={<Dashboard />} />
+							</Route>
+						</Route>
 					</Route>
 				</Routes>
 			</Suspense>
