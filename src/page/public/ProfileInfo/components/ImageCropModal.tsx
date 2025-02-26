@@ -176,7 +176,7 @@ const ImageCropModal: FC<Props> = ({setShowModal, imageSrc, setImageSrc, uploadP
 
 			<div
 				onClick={() => setShowModal(false)}
-				className="fixed bg-black/80 opacity-50 dark:opacity-60 inset-0 w-full h-screen z-[999998] cursor-pointer backdrop-blur-[100px]"
+				className="backdrop-overlay"
 			/>
 		</div>
 	);
