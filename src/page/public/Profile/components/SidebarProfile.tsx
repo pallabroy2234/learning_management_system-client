@@ -5,6 +5,7 @@ import {RiLockPasswordLine} from "react-icons/ri";
 import {SiCoursera} from "react-icons/si";
 import {AiOutlineLogout} from "react-icons/ai";
 import {Link, useLocation} from "react-router-dom";
+import {MdOutlineAdminPanelSettings} from "react-icons/md";
 
 type Props = {
 	user?: RootState["auth"]["user"];
@@ -37,6 +38,18 @@ const SidebarProfile: FC<Props> = ({handleLogOut, user}) => {
 					Change Password
 				</h5>
 			</Link>
+
+			{
+				user?.role === "admin" && (
+					<Link to="/admin/dashboard"
+						  className={`w-full flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-slate-800 hover:transition-[background-color] hover:duration-200 px-3 py-4 border-b dark:border-none shadow cursor-pointer`}>
+						<MdOutlineAdminPanelSettings size={20} />
+						<h5 className="pl-2 800px:block hidden font-Poppins dark:text-white">
+							Admin Dashboard
+						</h5>
+					</Link>
+				)
+			}
 
 			<Link to="/profile/enrolled-courses"
 				  className={`w-full flex items-center gap-2 hover:bg-gray-200 dark:hover:bg-slate-800 hover:transition-[background-color] hover:duration-200 px-3 py-4 border-b dark:border-none shadow cursor-pointer ${pathname === "/profile/enrolled-courses" ? "dark:bg-slate-800 bg-gray-200" : "bg-transparent"}`}>
