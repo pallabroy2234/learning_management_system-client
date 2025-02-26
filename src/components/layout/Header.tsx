@@ -96,7 +96,7 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 			{/*---------------------Start Small Screen Sidebar----------------------*/}
 
 			<div className="overflow-hidden">
-				<div className={`fixed   bg-white dark:bg-slate-900 z-[999999] opacity-90 transition-transform duration-300 top-0  bottom-0 right-0 overflow-y-auto  ${openSidebar ? "translate-x-0  max-w-[360px]" : "translate-x-full w-0 max-w-0 transition-all ease-in-out"}`}>
+				<div className={`fixed   bg-white dark:bg-slate-900 z-[999999]  transition-transform duration-300 top-0  bottom-0 right-0 overflow-y-auto  ${openSidebar ? "translate-x-0  max-w-[360px]" : "translate-x-full w-0 max-w-0 transition-all ease-in-out"}`}>
 					<div className="mt-5">
 						<div className="flex flex-col gap-4 mt-4 flex-1">
 							<Link onClick={() => setOpenSidebar(false)} to={"/"} className="px-6 text-[25px] font-Poppins font-[500] text-black dark:text-white">E-Learning</Link>
@@ -124,7 +124,7 @@ const Header: FC<Props> = ({activeItem, setOpen, route, open, setRoute}) => {
 				</div>
 			</div>
 
-			<div onClick={() => setOpenSidebar(false)} className={`fixed cursor-pointer top-0 right-0 bottom-0 left-0 overflow-hidden bg-black/50 opacity-50 z-[99998] backdrop-blur-lg ${openSidebar ? "visible" : "invisible"}`}>
+			<div onClick={() => setOpenSidebar(false)} className={`backdrop-overlay ${openSidebar ? "visible" : "invisible"}`}>
 			</div>
 
 
