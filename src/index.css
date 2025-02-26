@@ -22,9 +22,9 @@ html.light, html.dark, *, ::before, ::after {
     --tw-backdrop-brightness: 0px;
 }
 
-body {
-    @apply transition-colors duration-500 bg-no-repeat
-}
+/*body {*/
+/*    @apply transition-[background] duration-500 bg-no-repeat*/
+/*}*/
 
 /* Dark Mode Styles */
 .dark body {
@@ -91,11 +91,14 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ::-webkit-scrollbar {
     width: 10px;
+}
 
+.admin-sidebar::-webkit-scrollbar {
+    width: 5px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #888;
+    background: #0003;
 }
 
 ::-webkit-scrollbar-thumb {
@@ -105,4 +108,13 @@ input[type="number"]::-webkit-outer-spin-button {
 
 ::-webkit-scrollbar-thumb:hover {
     background: #007bff
+}
+
+.backdrop-overlay {
+    position: fixed;
+    inset: 0;
+    background-color: #0003;
+    backdrop-filter: blur(4px);
+    z-index: 99998;
+    cursor: pointer;
 }
