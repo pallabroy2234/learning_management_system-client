@@ -41,12 +41,12 @@ const menuData = [
         title: "Content",
         items: [
             {
-                to: "/admin/dashboard/course/create-courses",
+                to: "/admin/dashboard/content/create-course",
                 icon: GoDeviceCameraVideo,
                 title: "Create Course",
             },
             {
-                to: "/admin/dashboard/course/live-courses",
+                to: "/admin/dashboard/content/live-course",
                 icon: MdLiveTv,
                 title: "Live Courses",
             }
@@ -57,7 +57,7 @@ const menuData = [
         title: "Customization",
         items: [
             {
-                to: "/admin/dashboard/customizaiton/hero",
+                to: "/admin/dashboard/customization/hero",
                 icon: BiImageAlt,
                 title: "Hero",
             },
