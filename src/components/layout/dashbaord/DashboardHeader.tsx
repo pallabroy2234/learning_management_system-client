@@ -11,24 +11,41 @@ interface Props {
 }
 
 const DashboardHeader: FC<Props> = ({setShow}) => {
-    const [showHeader, setShowHeader] = useState(true);
     const [isOpen, setIsOpen] = useState(false)
-
+    const [showHeader, setShowHeader] = useState(true);
     const lastScrollY = useRef(0);
+    const themeChangeFlag = useRef(false);
 
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > lastScrollY.current) {
+            if (themeChangeFlag.current) return;
+            const currentScrollY = window.scrollY;
+            if (currentScrollY > lastScrollY.current) {
                 setShowHeader(false);
             } else {
                 setShowHeader(true);
             }
-            lastScrollY.current = window.scrollY;
+            lastScrollY.current = currentScrollY;
         };
 
         window.addEventListener("scroll", handleScroll);
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
+
+
+    const handleThemeChange = () => {
+        // Flag theme change and force header visibility
+        themeChangeFlag.current = true;
+        setShowHeader(true);
+
+        // Wait for layout stabilization
+        requestAnimationFrame(() => {
+            // Update scroll reference to new position
+            lastScrollY.current = window.scrollY;
+            themeChangeFlag.current = false;
+        });
+    };
+
 
     return (
         <motion.header initial={{y: "0%"}} animate={{
@@ -44,11 +61,11 @@ const DashboardHeader: FC<Props> = ({setShow}) => {
             <div className="px-4 sm:px-6 py-3 mx-auto flex items-center justify-between">
                 {/* Left Section */}
                 <div className="flex items-center gap-4">
-                    <motion.button type="button"  whileHover={{
+                    <motion.button type="button" whileHover={{
                         scale: 1.05,
                         rotate: -5
                     }} whileTap={{scale: 0.95}} className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white">
-                        <TiThMenu onClick={()=> setShow(true)} size={24}/>
+                        <TiThMenu onClick={() => setShow(true)} size={24}/>
                     </motion.button>
                     <motion.div initial={{opacity: 0, x: -20}} animate={{
                         opacity: 1,
@@ -59,7 +76,7 @@ const DashboardHeader: FC<Props> = ({setShow}) => {
                 </div>
                 {/* Right Section */}
                 <div className="flex items-center justify-center gap-4">
-                    <ThemeSwitcher/>
+                    <ThemeSwitcher onThemeChange={handleThemeChange}/>
 
                     <div className="relative">
                         <motion.button onClick={() => setIsOpen(!isOpen)} whileHover={{scale: 1.1}} whileTap={{scale: 0.9}} className="text-slate-700 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white relative">
