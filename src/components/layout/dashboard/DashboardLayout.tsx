@@ -1,7 +1,8 @@
 import {Outlet} from "react-router-dom";
-import {useState} from "react";
+import {Suspense, useState} from "react";
 import AdminSidebar from "./AdminSidebar.tsx";
 import DashboardHeader from "./DashboardHeader.tsx";
+import Loader from "../../shared/Loader.tsx";
 
 
 const DashboardLayout = () => {
@@ -14,7 +15,9 @@ const DashboardLayout = () => {
 
 
             <div>
-                <Outlet/>
+                <Suspense fallback={<Loader/>}>
+                    <Outlet/>
+                </Suspense>
             </div>
         </div>
     );
