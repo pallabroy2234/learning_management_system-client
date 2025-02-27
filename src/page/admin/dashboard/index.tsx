@@ -23,8 +23,8 @@ const Dashboard = () => {
 
 
             {/* Dashboard content */}
-            <div className="mt-[60px]">
-asdfasd
+            <div className="mt-[60px] px-4 sm:px-6 mx-auto">
+                Dashboard
             </div>
         </div>
     );
