@@ -1,56 +1,38 @@
-import {useTheme} from "next-themes";
-import {useEffect, useState} from "react";
-import {BiMoon, BiSun} from "react-icons/bi";
+import { useTheme } from "next-themes";
+import { useEffect, useState } from "react";
+import { BiMoon, BiSun } from "react-icons/bi";
 
+interface Props {
+    onThemeChange?: () => void;
+}
 
-const ThemeSwitcher = () => {
-	const [mounted, setMounted] = useState(false);
-	const {theme, setTheme} = useTheme();
+const ThemeSwitcher: React.FC<Props> = ({ onThemeChange }) => {
+    const [mounted, setMounted] = useState(false);
+    const { theme, setTheme } = useTheme();
 
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
-	useEffect(() => {
-		setMounted(true);
-	}, []);
+    const handleThemeToggle = () => {
+        const newTheme = theme === "light" ? "dark" : "light";
+        setTheme(newTheme);
+        onThemeChange?.(); // Trigger parent handler
+    };
 
-	if (!mounted) {
-		return null;
-	}
+    if (!mounted) return null;
 
-	return (
-		<div className="flex items-center justify-center mx-4">
-			{
-				theme === "light" ? (
-					<BiMoon onClick={() => setTheme("dark")} fill="black" size={25} className="cursor-pointer" />
-				) : (
-					<BiSun onClick={() => setTheme("light")} size={25} className="cursor-pointer" />
-				)
-			}
-		</div>
-	);
+    return (
+        <div className="flex items-center justify-center mx-4">
+            {theme === "light" ? (
+                <BiMoon onClick={handleThemeToggle} size={25} className="cursor-pointer" />
+            ) : (
+                <BiSun onClick={handleThemeToggle} size={25} className="cursor-pointer" />
+            )}
+        </div>
+    );
 };
+
 export default ThemeSwitcher;
 
 
-// export default function ThemeSwitcher() {
-//	
-// 	const {theme, setTheme} = useTheme();
-// 	const [mounted, setMounted] = useState(false);
-//
-// 	// Ensure the theme is correctly set after the component mounts
-// 	useEffect(() => {
-// 		setMounted(true);
-// 	}, []);
-//
-// 	if (!mounted) {
-// 		return null; // Prevents hydration mismatch in SSR
-// 	}
-//
-// 	return (
-// 		<button
-// 			className="p-2 border rounded-md dark:bg-gray-800 bg-gray-200 hover:bg-gray-300 dark:hover:bg-gray-700 transition"
-// 			onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-// 		>
-// 			{theme === "dark" ? "🌙 Dark Mode" : "☀️ Light Mode"}
-// 		</button>
-// 	);
-// }
