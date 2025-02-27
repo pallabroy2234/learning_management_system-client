@@ -3,7 +3,6 @@ import {TiThMenu} from "react-icons/ti";
 import ThemeSwitcher from "../../ui/ThemeSwitcher.tsx";
 import {IoMdNotifications} from "react-icons/io";
 import {FC, useEffect, useRef, useState} from "react";
-
 import NotificationModal from "../../shared/NotificationModal.tsx";
 
 interface Props {
