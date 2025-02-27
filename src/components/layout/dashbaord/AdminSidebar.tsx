@@ -1,234 +1,155 @@
 import {FC, JSX} from "react";
+import {motion, AnimatePresence} from "framer-motion";
 import {Link, useLocation} from "react-router-dom";
 import {useSelector} from "react-redux";
 import {RootState} from "../../../types/@types.ts";
-import {MdArrowBackIos, MdArrowForwardIos} from "react-icons/md";
+import defaultAvatar from "/public/avatar.jpg";
 import menuData from "./menuData.ts";
 
-const defaultAvatar = "/public/avatar.jpg"
 
-
-interface IMenuProps {
-    isCollapsed?: boolean;
-    icon: JSX.Element;
+interface MenuItemProps {
     to: string;
+    icon: JSX.Element;
     title: string;
+    onClick?: () => void;
 }
 
-const MenuItem: FC<IMenuProps> = ({isCollapsed, icon, to, title}) => {
-    const {pathname} = useLocation()
+const MenuItem: FC<MenuItemProps> = ({to, icon, title, onClick}) => {
+    const {pathname} = useLocation();
+
     return (
-        <Link to={to} className={`flex  items-center justify-start  gap-3 ${isCollapsed ? "pl-10" : "justify-center"} ${pathname === to ? "text-purple-400" : "dark:text-white text-black"} hover:text-purple-400  transition-colors duration-100`}>
-            <span className={`${isCollapsed ? "text-[24px]" : "text-[24px]"}`}>{icon}</span>
-            <div>
-                {
-                    isCollapsed && (
-                        <p className="whitespace-nowrap capitalize text-[16px] font-Poppins">{title}</p>
-                    )
-                }
-            </div>
-        </Link>
-    )
-}
+        <motion.div initial={{opacity: 0, x: -20}} animate={{opacity: 1, x: 0}} whileHover={{
+            translateX: 8,
+            transition: {type: "spring", stiffness: 300}
+        }} className="relative group">
+            <Link
+                to={to}
+                onClick={onClick}
+                className={`flex items-center pl-6 pr-4 py-3 mx-2 rounded-xl transition-all duration-200
+                    ${
+                    pathname === to
+                        ? "bg-gradient-to-r from-purple-600 to-blue-500 text-white shadow-lg"
+                        : "dark:text-gray-300 text-gray-600 hover:bg-gray-100 dark:hover:bg-gray-800/50"
+                }`}
+            >
+                <motion.span
+                    className="text-2xl mr-3"
+                    whileHover={{rotate: [0, -10, 10, 0]}}
+                    transition={{duration: 0.4}}
+                >
+                    {icon}
+                </motion.span>
+
+                <span className="text-[15px] font-medium capitalize">{title}</span>
+
+                {pathname === to && (
+                    <motion.div
+                        className="absolute -left-2 w-1 h-6 bg-white rounded-full"
+                        initial={{scaleY: 0}}
+                        animate={{scaleY: 1}}
+                        transition={{duration: 0.3}}
+                    />
+                )}
+
+                <motion.div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-10 bg-white/30 rounded-xl"
+                    transition={{duration: 0.2}}
+                />
+            </Link>
+        </motion.div>
+    );
+};
+
 
 interface Props {
-    isCollapsed: boolean
-    setIsCollapsed: (isCollapsed: boolean) => void
+    show: boolean;
+    setShow: (show: boolean) => void;
 }
 
-const AdminSidebar: FC<Props> = ({isCollapsed, setIsCollapsed}) => {
+const AdminSidebar: FC<Props> = ({show, setShow}) => {
     const {user} = useSelector((state: RootState) => state.auth)
 
 
     return (
-        <div className={`${isCollapsed ? "w-[320px]" : "w-[80px]"} 700px:block hidden transition-[width] ease-in-out duration-300 fixed top-0 left-0 h-screen bg-white shadow-lg dark:bg-[#111C43] z-[99999]`}>
-            <div className="relative">
-                <div className={`flex ${isCollapsed ? "justify-between py-[13px]" : "justify-center py-[19px]"}  items-center    shadow-md`}>
-                    {
-                        isCollapsed && (
-                            <Link to="/" className="text-[20px]  font-bold  pl-10  whitespace-nowrap font-Poppins uppercase text-black dark:text-white">E-Learning</Link>
-                        )
-                    }
+        <AnimatePresence>
+            {
+                show && (
+                    <>
+                        <motion.div initial={{x: "-100%"}} animate={{x: 0}} exit={{x: "-100%"}} transition={{
+                            type: "spring",
+                            stiffness: 300,
+                            damping: 25,
+                            mass: 0.8
+                        }} className="fixed top-0 left-0 h-screen w-[280px] bg-white dark:bg-[#0f172a] z-[99999] shadow-2xl border-r dark:border-gray-600">
+                            <div className="h-full flex flex-col overflow-hidden">
+                                {/* Header   */}
+                                <motion.div initial={{opacity: 0}} animate={{opacity: 1}} className="p-4 border-b dark:border-gray-800">
+                                    <div className="flex justify-between items-center">
+                                        <Link to={"/"} className="text-xl font-bold bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-transparent">E-Learning</Link>
+                                        <button onClick={() => setShow(false)} type="button" className="p-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg">X</button>
+                                    </div>
+                                </motion.div>
 
-                    <span onClick={() => setIsCollapsed(!isCollapsed)} className={`flex justify-center items-center cursor-pointer ${isCollapsed ? "pr-3" : "p-0"}`}>
-                       {
-                           isCollapsed ? (
-                               <MdArrowBackIos className={`500px:text-[20px] text-[28px]`}/>
-                           ) : (
-                               <MdArrowForwardIos className={`500px:text-[20px] text-[28px]`}/>
-                           )
-                       }
-                    </span>
-                </div>
+                                {/* content   */}
+                                <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar pb-[120px]">
+                                    {/* Profile Section */}
+                                    <motion.div initial={{scale: 0.9, opacity: 0}} animate={{
+                                        scale: 1,
+                                        opacity: 1
+                                    }} transition={{delay: 0.2}} className="p-6  text-center">
+                                        <motion.div whileHover={{scale: 1.05}} whileTap={{scale: 0.95}} className="relative inline-block">
+                                            <div className="w-20 h-20 rounded-full overflow-hidden shadow-lg relative">
+                                                <img
+                                                    src={user ? user.avatar.url : defaultAvatar}
+                                                    alt="Profile"
+                                                    className="w-full h-full object-cover"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 to-transparent"/>
+                                            </div>
+                                            <div className="absolute bottom-0 right-0 w-5 h-5 bg-green-400 rounded-full border-2 border-white dark:border-gray-900"/>
+                                        </motion.div>
 
-                <div className="overflow-y-auto h-screen pb-[103px] admin-sidebar">
-                    {
-                        isCollapsed && (
-                            <div className="flex flex-col justify-center items-center mt-[50px] whitespace-nowrap">
-                                <div className="w-[100px] h-[100px]  rounded-full ring-4 flex justify-center items-center whitespace-nowrap">
-                                    <img src={user ? user.avatar.url : defaultAvatar} alt={user ? user.name : "profile-image"} className="object-cover w-full h-full rounded-full"/>
-                                </div>
-                                <div className="flex flex-col justify-center items-center gap-1 mt-[20px]">
-                                    <h6 className="text-[17px] font-Josefin text-black dark:text-white">{user?.name}</h6>
-                                    <h4 className="text-[17px] font-Josefin capitalize text-black dark:text-white">- {user?.role}</h4>
+                                        <motion.div initial={{y: 10, opacity: 0}} animate={{
+                                            y: 0,
+                                            opacity: 1
+                                        }} transition={{delay: 0.2}} className="mt-4">
+                                            <h6 className="text-lg font-semibold dark:text-white capitalize">{user?.name}</h6>
+                                            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1 capitalize">{user?.role}</p>
+                                        </motion.div>
+                                    </motion.div>
+
+                                    {/* Menu items   */}
+                                    <motion.div className="space-y-1 px-2">
+                                        {menuData?.map((group, groupIndex) => (
+                                            <div key={groupIndex} className="space-y-2">
+                                                {
+                                                    group?.title && (
+                                                        <motion.div initial={{opacity: 0}} animate={{opacity: 1}} transition={{delay: 0.3 + groupIndex * 0.1}} className="px-4 py-2">
+                                                            <span className="text-xs font-semibold uppercase text-gray-500 dark:text-gray-400 tracking-wider">{group?.title}</span>
+                                                        </motion.div>
+                                                    )
+                                                }
+                                                {group?.items?.map(((item, itemIndex) => (
+                                                    <MenuItem key={itemIndex} to={item.to} icon={
+                                                        <item.icon/>} title={item.title} onClick={()=> setShow(false)}/>
+                                                )))}
+                                            </div>
+                                        ))}
+                                    </motion.div>
+
                                 </div>
                             </div>
-                        )
-                    }
-                    {/*  Menu List  */}
-                    <div className="mt-[40px]">
-                        <div className={`${isCollapsed ? "gap-12" : "gap-[45px]"} flex flex-col justify-evenly`}>
-                            {
-                                menuData?.map((group, groupIndex) => (
-                                    group?.title ? (
-                                        <div key={groupIndex} className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>
-                                            {
-                                                isCollapsed && (
-                                                    <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">{group?.title}</h5>
-                                                )
-                                            }
-                                            {
-                                                group?.items?.map((item, index) => (
-                                                    <MenuItem key={index} isCollapsed={isCollapsed} icon={
-                                                        <item.icon/>} to={item.to} title={item?.title}/>
-                                                ))
-                                            }
-                                        </div>
-                                    ) : (
-                                        group?.items?.map((item, index) => (
-                                            <MenuItem key={index} isCollapsed={isCollapsed} icon={
-                                                <item.icon/>} to={item.to} title={item?.title}/>
-                                        ))
-                                    )
-                                ))
-                            }
-                            {/*  Check comment   */}
-                        </div>
-                    </div>
-                </div>
+                        </motion.div>
 
-            </div>
-        </div>
+                        {/*  overlay */}
+                        <motion.div onClick={() => setShow(false)} initial={{opacity: 0}} animate={{opacity: show ? 1 : 0}} exit={{opacity: 0}} className="backdrop-overlay z-[99998]">
+
+                        </motion.div>
+                    </>
+                )
+            }
+
+        </AnimatePresence>
     )
 }
 export default AdminSidebar
-
-
-{/*<MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*    <VscHome/>} to="/admin/dashboard" title="Dashboard"/>*/
-}
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Data</h5>}*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <FaUsers/>} to="/admin/dashboard/data/users" title="Users"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <LiaFileInvoiceSolid/>} to="/admin/dashboard/data/invoices" title="Invoices"/>*/
-}
-{/*</div>*/
-}
-
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Content</h5>}*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <GoDeviceCameraVideo/>} to="/admin/dashboard/course/create-courses" title="Create Course"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <MdLiveTv/>} to="/admin/dashboard/course/live-courses" title="Live Courses"/>*/
-}
-{/*</div>*/
-}
-
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Customization</h5>}*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <BiImageAlt/>} to="/admin/dashboard/customizaiton/hero" title="Hero"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <MdLiveHelp/>} to="/admin/dashboard/customization/faq" title="FAQ"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <AiOutlineAppstore/>} to="/admin/dashboard/customization/categories" title="Categories"/>*/
-}
-{/*</div>*/
-}
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Controllers</h5>}*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <LuUsers/>} to="/admin/dashboard/controllers/manage-team" title="Manage Team"/>*/
-}
-{/*</div>*/
-}
-
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Analytics</h5>}*/
-}
-
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <IoStatsChart/>} to="/admin/dashboard/analytics/course" title="Course Analytics"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <MdOutlineShoppingCart/>} to="/admin/dashboard/analytics/orders" title="Order Analytics"/>*/
-}
-
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <AiOutlineUserSwitch*/
-}
-{/*        />} to="/admin/dashboard/analytics/users" title="User Analytics"/>*/
-}
-{/*</div>*/
-}
-
-{/*<div className={`${isCollapsed ? "gap-3" : "gap-[45px]"} flex flex-col `}>*/
-}
-{/*    {isCollapsed &&*/
-}
-{/*        <h5 className="pl-10 font-Poppins text-black dark:text-white text-[15px] whitespace-nowrap">Extras</h5>}*/
-}
-
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <CiSettings/>} to="/admin/dashboard/extras/settings" title="Settings"/>*/
-}
-{/*    <MenuItem isCollapsed={isCollapsed} icon={*/
-}
-{/*        <IoIosLogOut/>} to="/admin/dashboard/extras/logout" title="Log Out"/>*/
-}
-{/*</div>*/
-}
