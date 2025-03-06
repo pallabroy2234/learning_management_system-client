@@ -21,7 +21,7 @@ html.light, html.dark, *, ::before, ::after {
 .dark body {
     @apply bg-gradient-to-b from-[#0a192f] to-[#172a45]
     bg-opacity-90 backdrop-blur-lg
-    border border-white/10 shadow-2xl;
+    border border-white/10 shadow-2xl bg-no-repeat
 }
 
 
