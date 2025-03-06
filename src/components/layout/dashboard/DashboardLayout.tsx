@@ -9,7 +9,7 @@ const DashboardLayout = () => {
     const [show, setShow] = useState(false)
 
     return (
-        <div className="w-[100%] h-[700px] overflow-x-hidden">
+        <div className="w-[100%] ">
             <DashboardHeader setShow={setShow}/>
             <AdminSidebar show={show} setShow={setShow}/>
 
