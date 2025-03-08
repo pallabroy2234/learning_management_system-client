@@ -49,3 +49,22 @@ export interface ICourseFormValues {
         links: { title: string; url: string }[];
     }[];
 }
+
+
+export interface IArrayFieldError<T> {
+    [index: number]: T
+}
+
+
+export interface ICourseFormErrors {
+    benefits?: IArrayFieldError<{
+        title?: {
+            message: string
+        }
+    }>;
+    prerequisites?: IArrayFieldError<{
+        title?: {
+            message: string
+        }
+    }>;
+}
