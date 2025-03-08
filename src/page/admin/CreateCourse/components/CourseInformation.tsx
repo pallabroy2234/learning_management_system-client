@@ -120,7 +120,7 @@ const CourseInformation: FC<Props> = ({setStep}) => {
      * @summary     Handle Thumbnail Validation
      * @description Validate the thumbnail field
      * @type        {function}
-    * */
+     * */
     useEffect(() => {
         const handleThumbnailValidation = async () => {
             if (!thumbnailWatch?.[0]) {
@@ -185,9 +185,9 @@ const CourseInformation: FC<Props> = ({setStep}) => {
             </motion.div>
 
             {/* ----------------------- Form Body -------------------------- */}
-            <motion.div initial={{opacity: 0, y: -15}} animate={{opacity: 1, y: 0}} exit={{
+            <motion.div initial={{opacity: 0, x: -15}} animate={{opacity: 1, x: 0}} exit={{
                 opacity: 0,
-                x: -20
+                x: -15
             }} className="flex flex-col gap-6">
                 <div className="flex  800px:flex-row 800px:justify-between 800px:gap-10 flex-col gap-4">
 
@@ -236,7 +236,7 @@ const CourseInformation: FC<Props> = ({setStep}) => {
                     <div className="flex flex-col gap-2 w-full">
                         <label htmlFor="tags" className="text-gray-600 dark:text-slate-400">Tags <span className="text-red-500">*</span>
                         </label>
-                        <motion.input {...register("tags")} initial={{x: 0}} animate={errors?.tags ? {x: [0, -3, 3, -3, 3, 0]} : {x: 0}} transition={{duration: 0.5}} type="text" id="tags" className={`${errors?.tags ? "border-red-500" : "dark:border-slate-500 border-gray-400"} focus:outline-none px-3 py-[8px] dark:bg-transparent border rounded `} placeholder="MERN Stack, React, Node, Python, Django, Development etc"/>
+                        <motion.input {...register("tags")} initial={{x: 0}} animate={errors?.tags ? {x: [0, -3, 3, -3, 3, 0]} : {x: 0}} transition={{duration: 0.5}} type="text" id="tags" className={`${errors?.tags ? "border-red-500" : "dark:border-slate-500 border-gray-400"} focus:outline-none px-3 py-[8px] dark:bg-transparent border rounded`} placeholder="MERN Stack, React, Node, Python, Django, Development etc"/>
                         {errors?.tags && (
                             <motion.div initial={{opacity: 0, x: 15}} animate={{opacity: 1, x: 0}} exit={{
                                 opacity: 0,
@@ -244,7 +244,6 @@ const CourseInformation: FC<Props> = ({setStep}) => {
                             }} className=" text-red-500 text-base">{errors?.tags?.message?.toString()}</motion.div>
                         )}
                     </div>
-
                     {/*  --------------------------- Course Level ------------------    */}
 
                     <div className="flex flex-col gap-2 w-full">
@@ -362,11 +361,13 @@ const CourseInformation: FC<Props> = ({setStep}) => {
                 </div>
 
 
-                <div>
+                <div className="flex 400px:justify-end justify-start">
                     <motion.button
+                        whileHover={!isValid ? {scale: 1}: {scale: 1.05}}
+                        whileTap={!isValid ? {scale: 1}: {scale: 0.95}}
                         onClick={handleNext}
                         disabled={!isValid}
-                        className={`px-[70px] py-2  text-base   text-white rounded transition-all duration-300  shadow-lg ${
+                        className={`400px:px-[100px] px-[70px] py-2  text-base   text-white rounded transition-all duration-300  shadow-lg ${
                             !isValid
                                 ? 'bg-blue-400 cursor-not-allowed'
                                 : 'bg-blue-500 hover:bg-blue-600'
