@@ -5,13 +5,14 @@ import CourseInformation from "./CourseInformation.tsx";
 import {AnimatePresence} from "framer-motion";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {ICourseFormValues} from "../../../../types/@types.ts";
-import {courseInfoSchema} from "../../../../schema/courseSchema.tsx";
-
+import {courseInfoSchema, requirementsSchema} from "../../../../schema/courseSchema.tsx";
+import CourseRequirements from "./CourseRequirements.tsx";
 
 const Create = () => {
     const [currentStep, setCurrentStep] = useState(0);
-    const steps = ["Course Info", "Course Option", "Course Content", "Course Preview"];
-    const stepsSchemas = [courseInfoSchema];
+    // const steps = ["Course Info", "Course Option", "Course Content", "Course Preview"];
+    const steps = ["Basic Info", "Requirements", "Course Content", "Preview"]
+    const stepsSchemas = [courseInfoSchema, requirementsSchema];
 
 
     const methods = useForm<ICourseFormValues>({
@@ -23,9 +24,9 @@ const Create = () => {
             tags: '',
             level: '',
             description: '',
-            demoUrl: '',
             benefits: [{title: ''}],
-            prerequisites: [{title: ''}],
+            prerequisites: [],
+            demoUrl: '',
             courseData: [{
                 title: '',
                 videoDescription: '',
@@ -37,8 +38,10 @@ const Create = () => {
             }]
         },
         mode: 'onChange',
-        resolver: yupResolver(stepsSchemas[currentStep]) as unknown as Resolver<ICourseFormValues>
+        resolver: yupResolver(stepsSchemas[currentStep] as any) as Resolver<ICourseFormValues>,
+        shouldUnregister: false,
     });
+
 
     const onSubmit = (data: any) => {
         console.log(data);
@@ -59,6 +62,12 @@ const Create = () => {
                                 {
                                     currentStep === 0 && (
                                         <CourseInformation setStep={setCurrentStep}/>
+                                    )
+                                }
+
+                                {
+                                    currentStep === 1 && (
+                                        <CourseRequirements setStep={setCurrentStep}/>
                                     )
                                 }
                             </AnimatePresence>
