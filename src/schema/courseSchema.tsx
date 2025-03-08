@@ -1,4 +1,5 @@
 import * as yup from "yup";
+import {object} from "yup";
 
 
 /**
@@ -70,3 +71,80 @@ export const courseInfoSchema = yup.object().shape({
     level:
         yup.string().required("Level is required").oneOf(["beginner", "intermediate", "advanced", "expert"], "Invalid level"),
 });
+
+
+export const requirementsSchema = yup.object().shape({
+    benefits: yup.array().of(
+        object({
+            title: yup.string().required("Benefit title is required").min(10, "Minimum 10 characters")
+        })
+    ).min(1, "At least one benefit is required").required(),
+    prerequisites: yup.array().of(
+        object({
+            title: yup.string().when('$isPrerequisiteAdded', (isPrerequisiteAdded, schema) => {
+                if (isPrerequisiteAdded) {
+                    return schema.required("Prerequisite title is required");
+                } else {
+                    return schema;
+                }
+            })
+        })
+    ).optional()
+});
+
+
+
+
+
+//
+// export const combinedSchema = yup.object().shape({
+//     ...courseInfoSchema.fields,
+//     ...requirementsSchema.fields,
+// });
+//
+
+
+// import {mixed, object, array, string, number} from 'yup';
+
+// কমন ফিল্ডস ডিফাইন করুন
+// const baseSchema = object().shape({
+//     thumbnail: mixed(),
+//     name: string().required("Course name is required").min(3, "Course name must be at least 3 characters"),
+//     price: number(),
+//     estimatedPrice: number(),
+//     tags: string(),
+//     level: string(),
+//     description: string(),
+//     benefits: array().of(object().shape({title: string()})),
+//     prerequisites: array().of(object().shape({title: string()})),
+//     demoUrl: string(),
+//     courseData: array().of(
+//         object().shape({
+//             title: string(),
+//             videoDescription: string(),
+//             videoUrl: string(),
+//             videoSection: string(),
+//             videoLength: mixed(),
+//             videoPlayer: string(),
+//             links: array().of(object().shape({title: string(), url: string()}))
+//         })
+//     )
+// });
+
+
+// export const courseInfoSchema = baseSchema.pick([
+//     'thumbnail',
+//     'name',
+//     'price',
+//     'estimatedPrice',
+//     'tags',
+//     'level',
+//     'description'
+// ]).required();
+//
+//
+// export const requirementsSchema = baseSchema.pick([
+//     'benefits',
+//     'prerequisites'
+// ]).required();
+
