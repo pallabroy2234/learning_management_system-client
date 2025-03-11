@@ -47,6 +47,7 @@ export interface ICourseFormValues {
         videoLength: number | null;
         videoPlayer: string;
         links: { title: string; url: string }[];
+        suggestion?:string;
     }[];
 }
 
@@ -67,4 +68,40 @@ export interface ICourseFormErrors {
             message: string
         }
     }>;
+}
+
+export interface ICourseContentErrors {
+    [index:number]: {
+        title?: {
+            message: string
+        },
+        videoSection?: {
+            message: string
+        },
+        videoUrl?: {
+            message: string
+        },
+        videoLength?: {
+            message: string
+        },
+        suggestion?: {
+            message: string
+        },
+        videoPlayer?:{
+            message: string
+        },
+        videoDescription?:{
+            message: string
+        }
+        links?: {
+            [index:number]: {
+                title?: {
+                    message: string
+                },
+                url?: {
+                    message: string
+                }
+            }
+        }
+    }
 }
