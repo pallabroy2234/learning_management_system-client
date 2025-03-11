@@ -1,7 +1,6 @@
 import * as yup from "yup";
 import {object} from "yup";
 
-
 /**
  * @summary        Get Image Dimensions
  * @description    Get the dimensions of an image
@@ -10,18 +9,16 @@ import {object} from "yup";
  * */
 
 const getImageDimensions = (file: any) => {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => {
-            URL.revokeObjectURL(img.src);
-            resolve({width: img.width, height: img.height})
-        }
-        img.onerror = reject;
-        img.src = URL.createObjectURL(file);
-
-    })
-}
-
+	return new Promise((resolve, reject) => {
+		const img = new Image();
+		img.onload = () => {
+			URL.revokeObjectURL(img.src);
+			resolve({width: img.width, height: img.height});
+		};
+		img.onerror = reject;
+		img.src = URL.createObjectURL(file);
+	});
+};
 
 /**
  * @summary        Course Info Schema
@@ -31,70 +28,109 @@ const getImageDimensions = (file: any) => {
  * */
 
 export const courseInfoSchema = yup.object().shape({
-    thumbnail: yup.mixed().required("Thumbnail is required").test("fileType", "Unsupported file format", (value: any) => {
-        return value && ["image/jpeg", "image/png", "image/jpg, image/webp"].includes(value[0].type as string)
-    }).test("fileSize", "File size is too large(Max 2MB)", (value: any) => {
-        return value && value[0]?.size <= 2 * 1024 * 1024;
-    }).test("dimension", "Minimum dimensions 1280x720", async (value: any) => {
-        if (!value || !value[0]) return false;
-        try {
-            const dimensions: any = await getImageDimensions(value[0]);
-            return dimensions.width >= 1280 && dimensions.height >= 720;
-        } catch {
-            return false;
-        }
-    }),
-    name: yup.string().required("Course name is required").min(3, "Course name must be at least 3 characters"),
-    description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
-    price: yup
-        .number()
-        .transform((_, originalValue) => {
-            // Convert empty string or undefined to null
-            if (originalValue === "" || originalValue === undefined || originalValue === null) {
-                return null;
-            }
-            return Number(originalValue);
-        })
-        .nullable()
-        .required("Price is required")
-        .typeError("Price must be a number")
-        .min(0, "Price cannot be negative"),
-    estimatedPrice:
-        yup.number().transform((_, originalValue) => {
-            if (originalValue === "" || originalValue === undefined || originalValue === null) {
-                return null
-            }
-            return Number(originalValue);
-        }).nullable().required("Estimated price is required").typeError("Estimated price must be a number").min(0, "Estimated price cannot be negative"),
-    tags:
-        yup.string().required("Tags are required"),
-    level:
-        yup.string().required("Level is required").oneOf(["beginner", "intermediate", "advanced", "expert"], "Invalid level"),
+	thumbnail: yup
+		.mixed()
+		.required("Thumbnail is required")
+		.test("fileType", "Unsupported file format", (value: any) => {
+			return value && ["image/jpeg", "image/png", "image/jpg, image/webp"].includes(value[0].type as string);
+		})
+		.test("fileSize", "File size is too large(Max 2MB)", (value: any) => {
+			return value && value[0]?.size <= 2 * 1024 * 1024;
+		})
+		.test("dimension", "Minimum dimensions 1280x720", async (value: any) => {
+			if (!value || !value[0]) return false;
+			try {
+				const dimensions: any = await getImageDimensions(value[0]);
+				return dimensions.width >= 1280 && dimensions.height >= 720;
+			} catch {
+				return false;
+			}
+		}),
+	name: yup.string().required("Course name is required").min(3, "Course name must be at least 3 characters"),
+	description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
+	price: yup
+		.number()
+		.transform((_, originalValue) => {
+			// Convert empty string or undefined to null
+			if (originalValue === "" || originalValue === undefined || originalValue === null) {
+				return null;
+			}
+			return Number(originalValue);
+		})
+		.nullable()
+		.required("Price is required")
+		.typeError("Price must be a number")
+		.min(0, "Price cannot be negative"),
+	estimatedPrice: yup
+		.number()
+		.transform((_, originalValue) => {
+			if (originalValue === "" || originalValue === undefined || originalValue === null) {
+				return null;
+			}
+			return Number(originalValue);
+		})
+		.nullable()
+		.required("Estimated price is required")
+		.typeError("Estimated price must be a number")
+		.min(0, "Estimated price cannot be negative"),
+	tags: yup.string().required("Tags are required"),
+	level: yup.string().required("Level is required").oneOf(["beginner", "intermediate", "advanced", "expert"], "Invalid level"),
 });
-
 
 export const requirementsSchema = yup.object().shape({
-    benefits: yup.array().of(
-        object({
-            title: yup.string().required("Benefit title is required").min(10, "Minimum 10 characters")
-        })
-    ).min(1, "At least one benefit is required").required(),
-    prerequisites: yup.array().of(
-        object({
-            title: yup.string().when('$isPrerequisiteAdded', (isPrerequisiteAdded, schema) => {
-                if (isPrerequisiteAdded) {
-                    return schema.required("Prerequisite title is required");
-                } else {
-                    return schema;
-                }
-            })
-        })
-    ).optional()
+	benefits: yup
+		.array()
+		.of(
+			object({
+				title: yup.string().required("Benefit title is required").min(10, "Minimum 10 characters"),
+			}),
+		)
+		.min(1, "At least one benefit is required")
+		.required(),
+	prerequisites: yup
+		.array()
+		.of(
+			object({
+				title: yup.string().when("$isPrerequisiteAdded", (isPrerequisiteAdded, schema) => {
+					if (isPrerequisiteAdded) {
+						return schema.required("Prerequisite title is required");
+					} else {
+						return schema;
+					}
+				}),
+			}),
+		)
+		.optional(),
 });
 
-
-
-
+export const courseContentSchema = yup.object().shape({
+	courseData: yup.array().of(
+		object({
+			title: yup.string().required("Video Title is required").min(3, "Title must be at least 3 characters"),
+			videoSection: yup.string().required("Video Section is required"),
+			videoUrl: yup.string().required("Video URL is required").url("Invalid URL"),
+			videoLength: yup
+				.number()
+				.required("Video Length is required")
+				.typeError("Video Length must be a number")
+				.min(1, "Video Length must be at least 1 minute"),
+			suggestion: yup.string().optional(),
+			videoPlayer: yup.string().required("Video Player is required"),
+			videoDescription: yup.string().required("Video Description is required").min(10, "Description must be at least 10 characters"),
+			links: yup.array().of(
+				object().when("$isLinkAdded", (isLinkAdded, schema)=> {
+					if(isLinkAdded){
+						return schema.shape({
+							title: yup.string().required("Link Title is required"),
+							url: yup.string().required("Link URL is required").url("Invalid URL"),
+						})
+					}
+					return schema;
+				})
+			)
+		}),
+	),
+});
 
 //
 // export const combinedSchema = yup.object().shape({
