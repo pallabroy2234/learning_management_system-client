@@ -20,6 +20,7 @@ export default {
                 "600px": "600px",
                 "500px": "500px",
                 "400px": "400px",
+                "350px": "350px",
                 "320px": "320px"
             },
             animation: {
