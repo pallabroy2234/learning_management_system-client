@@ -28,6 +28,17 @@ export interface IUser {
     __v: number;
 }
 
+
+
+
+export interface IResponse {
+    success:boolean;
+    message:string;
+    payload?:any;
+}
+
+
+
 export interface ICourseFormValues {
     thumbnail: string;
     name: string;
