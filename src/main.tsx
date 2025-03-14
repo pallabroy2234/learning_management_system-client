@@ -14,7 +14,10 @@ createRoot(document.getElementById("root")!).render(
 			<HelmetProvider>
 				<App />
 			</HelmetProvider>
-			<Toaster reverseOrder={false} />
+			<Toaster
+				reverseOrder={false}
+				containerClassName="!z-[999999]"
+			/>
 		</ThemeProvider>
 	</Provider>
 );
