@@ -17,9 +17,9 @@ const Password = lazy(() => import("./page/public/Password"));
 const Dashboard = lazy(() => import("./page/admin/dashboard"));
 const CreateCourse = lazy(() => import("./page/admin/CreateCourse"));
 const DashboardLayout = lazy(() => import("./components/layout/dashboard/DashboardLayout.tsx"));
+const LiveCourse = lazy(() => import("./page/admin/LiveCourse"));
 const App = () => {
     const [loader, setLoader] = useState<boolean>(true);
-
     useEffect(() => {
         const initializeAuthState = async () => {
             try {
@@ -60,6 +60,7 @@ const App = () => {
                             <Route element={<ProtectedRoute adminRoute={true}/>}>
                                 <Route index={true} element={<Dashboard/>}/>
                                 <Route path="content/create-course" element={<CreateCourse/>}/>
+                                <Route path="content/live-course" element={<LiveCourse/>}/>
                             </Route>
                         </Route>
                     </Route>
