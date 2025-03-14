@@ -1,8 +1,8 @@
 import SEO from "../../../components/shared/SEO.tsx";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {combinedSchema, courseContentSchema, courseInfoSchema, requirementsSchema} from "../../../schema/courseSchema.tsx";
 import {FormProvider, Resolver, useForm} from "react-hook-form";
-import {ICourseFormValues} from "../../../types/@types.ts";
+import {CustomError, ICourseFormValues} from "../../../types/@types.ts";
 import {yupResolver} from "@hookform/resolvers/yup";
 import Stepper from "./components/Stepper.tsx";
 import {AnimatePresence} from "framer-motion";
@@ -10,12 +10,24 @@ import CourseInformation from "./components/CourseInformation.tsx";
 import CourseRequirements from "./components/CourseRequirements.tsx";
 import CourseContent from "./components/CourseContent.tsx";
 import CoursePreview from "./components/CoursePreview.tsx";
+import {useCreateCourseMutation} from "../../../store/features/course/courseApi.ts";
+import toast from "react-hot-toast";
+import {ThreeDots} from "react-loader-spinner";
 
 const CreateCourse = () => {
+	const [createCourse, {isLoading,isError, isSuccess, error, data}] = useCreateCourseMutation();
 	const [currentStep, setCurrentStep] = useState(0);
 	const steps = ["Basic Info", "Requirements", "Course Content", "Preview"];
 	const stepsSchemas = [courseInfoSchema, requirementsSchema, courseContentSchema, combinedSchema];
 
+
+	/**
+	 * @summary Form Methods
+	 * @description Form methods for handling form state and validation
+	 * @param {ICourseFormValues} - Course form values
+	 * @returns {void}
+	 * @method useForm
+	* */
 	const methods = useForm<ICourseFormValues>({
 		defaultValues: {
 			thumbnail: "",
@@ -47,6 +59,12 @@ const CreateCourse = () => {
 		shouldUnregister: false,
 	});
 
+
+	/**
+	 * @summary Handle next step
+	 * @description Handle next step in the course creation process
+	 * @param {void} - No params1
+	* */
 	const handleNext = async () => {
 		const isValid = await methods.trigger();
 		if (isValid) {
@@ -54,13 +72,89 @@ const CreateCourse = () => {
 		}
 	};
 
+	
+	/**
+	 * @summary Handle back step
+	 * @description Handle previous step in the course creation process
+	 * @param {void} - No params
+	 * @returns {void}
+	* */
 	const handleBack = () => {
 		setCurrentStep((prev) => prev - 1);
 	};
 
-	const onSubmit = (data: any) => {
-		console.log(data);
+
+	/**
+	 * @summary Submit course form
+	 * @description Submit course form data to create a new course
+	 * @param {ICourseFormValues} data - Course form data
+	* */
+	const onSubmit = async (data: any) => {
+		const formData = new FormData();
+		if (data) {
+			//  course Information
+			formData.append("thumbnail", data.thumbnail[0]);
+			formData.append("name", data.name);
+			formData.append("price", data.price);
+			formData.append("estimatedPrice", data.estimatedPrice);
+			formData.append("tags", data.tags);
+			formData.append("level", data.level);
+			formData.append("description", data.description);
+			formData.append("demoUrl", data.demoUrl);
+
+			// 	course Requirements
+
+			data.benefits.forEach((item: any, index: number) => {
+				formData.append(`benefits[${index}][title]`, item.title);
+			});
+
+			data.prerequisites.map((item: any, index: number) => {
+				formData.append(`prerequisites[${index}][title]`, item.title);
+			});
+
+			// 	course content
+			data.courseData.map((item: any, index: number) => {
+				formData.append(`courseData[${index}][title]`, item.title);
+				formData.append(`courseData[${index}][videoDescription]`, item.videoDescription);
+				formData.append(`courseData[${index}][videoUrl]`, item.videoUrl);
+				formData.append(`courseData[${index}][videoSection]`, item.videoSection);
+				formData.append(`courseData[${index}][videoLength]`, item.videoLength);
+				formData.append(`courseData[${index}][videoPlayer]`, item.videoPlayer);
+				formData.append(`courseData[${index}][suggestion]`, item.suggestion);
+				item.links.map((link: any, linkIndex: number) => {
+					formData.append(`courseData[${index}][links][${linkIndex}][title]`, link.title);
+					formData.append(`courseData[${index}][links][${linkIndex}][url]`, link.url);
+				});
+			});
+
+			// Api Call
+			await createCourse(formData as any);
+		}
 	};
+
+
+	/**
+	 * @summary Handle form submission success or error
+	 * @description Handle form submission success or error and display toast messages
+	 * @param {boolean} isSuccess - Form submission success status
+	 * @param {boolean} isError - Form submission error status
+	 * @param {CustomError} error - Form submission error object
+	 * @param {ICourseFormValues} data - Form submission data
+	* */
+	useEffect(() => {
+		if (isSuccess) {
+			const message = data?.message || "Course created successfully";
+			toast.success(message);
+			methods.reset();
+			setCurrentStep(0);
+		}
+		if(isError){
+			if("data" in error){
+				const err = error as CustomError
+				toast.error(err.data.message)
+			}
+		}
+	}, [isError, isSuccess]);
 
 	return (
 		<div>
@@ -121,7 +215,7 @@ const CreateCourse = () => {
 												type='submit'
 												disabled={!methods.formState.isValid}
 												className={`${!methods.formState.isValid ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} px-8 py-2 350px:order-2 order-1  text-white rounded-lg transition-colors`}>
-												Submit
+												{isLoading ?  <ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Submit"}
 											</button>
 										)}
 									</div>
