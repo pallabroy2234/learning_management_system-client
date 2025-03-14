@@ -48,33 +48,11 @@ export const courseInfoSchema = yup.object().shape({
 		}),
 	name: yup.string().required("Course name is required").min(3, "Course name must be at least 3 characters"),
 	description: yup.string().required("Description is required").min(10, "Description must be at least 10 characters"),
-	price: yup
-		.number()
-		.transform((_, originalValue) => {
-			// Convert empty string or undefined to null
-			if (originalValue === "" || originalValue === undefined || originalValue === null) {
-				return null;
-			}
-			return Number(originalValue);
-		})
-		.nullable()
-		.required("Price is required")
-		.typeError("Price must be a number")
-		.min(0, "Price cannot be negative"),
-	estimatedPrice: yup
-		.number()
-		.transform((_, originalValue) => {
-			if (originalValue === "" || originalValue === undefined || originalValue === null) {
-				return null;
-			}
-			return Number(originalValue);
-		})
-		.nullable()
-		.required("Estimated price is required")
-		.typeError("Estimated price must be a number")
-		.min(0, "Estimated price cannot be negative"),
+	price: yup.number().required("Price is required").min(0, "Price cannot be negative"),
+	estimatedPrice: yup.number().required("Estimated price is required").min(0, "Estimated price cannot be negative"),
 	tags: yup.string().required("Tags are required"),
 	level: yup.string().required("Level is required").oneOf(["beginner", "intermediate", "advanced", "expert"], "Invalid level"),
+	demoUrl: yup.string().required("Demo URL is required"),
 });
 
 export const requirementsSchema = yup.object().shape({
@@ -100,7 +78,7 @@ export const requirementsSchema = yup.object().shape({
 				}),
 			}),
 		)
-		.optional(),
+		.required(),
 });
 
 export const courseContentSchema = yup.object().shape({
@@ -108,7 +86,7 @@ export const courseContentSchema = yup.object().shape({
 		object({
 			title: yup.string().required("Video Title is required").min(3, "Title must be at least 3 characters"),
 			videoSection: yup.string().required("Video Section is required"),
-			videoUrl: yup.string().required("Video URL is required").url("Invalid URL"),
+			videoUrl: yup.string().required("Video URL is required"),
 			videoLength: yup
 				.number()
 				.required("Video Length is required")
@@ -132,12 +110,13 @@ export const courseContentSchema = yup.object().shape({
 	),
 });
 
-//
-// export const combinedSchema = yup.object().shape({
-//     ...courseInfoSchema.fields,
-//     ...requirementsSchema.fields,
-// });
-//
+
+export const combinedSchema = yup.object().shape({
+    ...courseInfoSchema.fields,
+    ...requirementsSchema.fields,
+	...courseContentSchema.fields
+});
+
 
 
 // import {mixed, object, array, string, number} from 'yup';
