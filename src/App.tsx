@@ -60,7 +60,7 @@ const App = () => {
                             <Route element={<ProtectedRoute adminRoute={true}/>}>
                                 <Route index={true} element={<Dashboard/>}/>
                                 <Route path="content/create-course" element={<CreateCourse/>}/>
-                                <Route path="content/live-course" element={<LiveCourse/>}/>
+                                <Route path="content/courses" element={<LiveCourse/>}/>
                             </Route>
                         </Route>
                     </Route>
