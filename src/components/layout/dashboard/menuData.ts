@@ -46,7 +46,7 @@ const menuData = [
                 title: "Create Course",
             },
             {
-                to: "/admin/dashboard/content/live-course",
+                to: "/admin/dashboard/content/courses",
                 icon: MdLiveTv,
                 title: "Live Courses",
             }
