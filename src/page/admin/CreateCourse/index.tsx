@@ -13,9 +13,11 @@ import CoursePreview from "./components/CoursePreview.tsx";
 import {useCreateCourseMutation} from "../../../store/features/course/courseApi.ts";
 import toast from "react-hot-toast";
 import {ThreeDots} from "react-loader-spinner";
+import {useNavigate} from "react-router-dom";
 
 const CreateCourse = () => {
 	const [createCourse, {isLoading,isError, isSuccess, error, data}] = useCreateCourseMutation();
+	const navigation = useNavigate();
 	const [currentStep, setCurrentStep] = useState(0);
 	const steps = ["Basic Info", "Requirements", "Course Content", "Preview"];
 	const stepsSchemas = [courseInfoSchema, requirementsSchema, courseContentSchema, combinedSchema];
@@ -145,8 +147,8 @@ const CreateCourse = () => {
 		if (isSuccess) {
 			const message = data?.message || "Course created successfully";
 			toast.success(message);
-			methods.reset();
-			setCurrentStep(0);
+			navigation("/admin/dashboard/content/live-course")
+			methods.reset()
 		}
 		if(isError){
 			if("data" in error){
@@ -213,8 +215,8 @@ const CreateCourse = () => {
 										{currentStep === 3 && (
 											<button
 												type='submit'
-												disabled={!methods.formState.isValid}
-												className={`${!methods.formState.isValid ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} px-8 py-2 350px:order-2 order-1  text-white rounded-lg transition-colors`}>
+												disabled={!methods.formState.isValid || isLoading || methods.formState.isSubmitting}
+												className={`${!methods.formState.isValid ? "bg-blue-400 cursor-not-allowed" : "bg-blue-500 hover:bg-blue-600"} px-8 py-2 350px:order-2 order-1  text-white rounded-lg transition-colors disabled:cursor-not-allowed ${!methods.formState.isValid ? "cursor-not-allowed" : "cursor-pointer"}`}>
 												{isLoading ?  <ThreeDots height="20" width="40" radius="9" color="#fff" /> : "Submit"}
 											</button>
 										)}
