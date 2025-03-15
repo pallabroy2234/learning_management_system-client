@@ -5,6 +5,7 @@ import {initializeAuth} from "./store/features/auth/authApi.ts";
 import Loader from "./components/shared/Loader.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import "react-image-crop/dist/ReactCrop.css";
+import NotFound from "./page/NotFound.tsx";
 
 // * Import all Route components
 const Home = lazy(() => import("./page/public/Home"));
@@ -63,6 +64,8 @@ const App = () => {
                                 <Route path="content/courses" element={<LiveCourse/>}/>
                             </Route>
                         </Route>
+
+                        <Route path="*" element={<NotFound/>}/>
                     </Route>
                 </Routes>
             </Suspense>
