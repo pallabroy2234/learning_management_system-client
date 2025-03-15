@@ -18,7 +18,7 @@ const Password = lazy(() => import("./page/public/Password"));
 const Dashboard = lazy(() => import("./page/admin/dashboard"));
 const CreateCourse = lazy(() => import("./page/admin/CreateCourse"));
 const DashboardLayout = lazy(() => import("./components/layout/dashboard/DashboardLayout.tsx"));
-const LiveCourse = lazy(() => import("./page/admin/LiveCourse"));
+const LiveCourse = lazy(() => import("./page/admin/Courses"));
 const App = () => {
     const [loader, setLoader] = useState<boolean>(true);
     useEffect(() => {
