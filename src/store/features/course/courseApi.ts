@@ -40,9 +40,32 @@ export const userApi = api.injectEndpoints({
 				body:data,
 				credentials: "include" as RequestCredentials,
 			}),
-			invalidatesTags: ["Course"],
+			invalidatesTags: [{type:"Course", id:"LIST"}],
+		}),
+
+
+		/**
+		 * @summary       Get Courses
+		 * @description   Retrieves all courses
+		 * @method        GET
+		 * @path          /course/get-all-courses/admin
+		 * @security      Private
+		 * @returns {IResponse} Response object containing the list of courses
+		* */
+
+		getCourses: builder.query({
+			query: ()=> ({
+				url: "/course/get-all-courses/admin",
+				method: "GET",
+				credentials: "include" as RequestCredentials,
+			}),
+			providesTags: (result)=> [
+				{type:"Course", id:"LIST"},
+				// ...result.map(({ _id }:any) => ({ type: 'Course', id: _id })),
+				...(result?.payload?.map(({_id}:any)=> ({type:"Course", id:_id})) || [])
+			]
 		})
 	}),
 });
 
-export const {useCreateCourseMutation} = userApi;
+export const {useCreateCourseMutation,useGetCoursesQuery} = userApi;
