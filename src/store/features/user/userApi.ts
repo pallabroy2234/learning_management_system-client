@@ -77,8 +77,30 @@ export const userApi = api.injectEndpoints({
 				credentials: "include" as RequestCredentials,
 				body: data,
 			}),
-			invalidatesTags: ["User"],
+			invalidatesTags: ["User"]
 		}),
+
+		/**
+		 * @summary       Get all users by admin
+		 * @description   Get all users by admin
+		 * @method        GET
+		 * @path          /user/get-all-users/admin
+		 * @security      Private
+		 * @tags          User
+		 *
+		* */
+
+		getAllUsersByAdmin: builder.query({
+			query: ()=> ({
+				url: "/user/get-all-users/admin",
+				method: "GET",
+				credentials: "include" as RequestCredentials,
+			}),
+			providesTags: (result) => [
+				{ type: "User", id: "LIST" },
+				...(result?.payload?.map(({ _id }:any) => ({ type: "User", id: _id })) || []),
+			],
+		})
 	}),
 });
 
@@ -87,4 +109,5 @@ export const {
 	useUpdateUserInfoMutation,
 	useCreatePasswordSocialAuthMutation,
 	useUpdatePasswordMutation,
+	useGetAllUsersByAdminQuery
 } = userApi;
