@@ -108,8 +108,8 @@ const UserTable: FC<Props> = ({data}) => {
 			{
 				accessorKey: "Email",
 				header: "Email",
-				cell: () => (
-					<motion.button whileHover={{scale: 0.9}} whileTap={{scale: 1.05}} type='button' className='ml-2'>
+				cell: ({row}) => (
+					<motion.button onClick={() => window.location.href = `mailto:${row.original.email}`} whileHover={{scale: 0.9}} whileTap={{scale: 1.05}} type='button' className='ml-2'>
 						<MdOutlineMail size={20} />
 					</motion.button>
 				),
@@ -175,7 +175,6 @@ const UserTable: FC<Props> = ({data}) => {
 			transition: {duration: 0.2},
 		},
 	};
-
 	return (
 		<motion.div {...initialAnimation} className='rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-700 dark:bg-gray-800'>
 			{/*	 Table Head */}
