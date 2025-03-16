@@ -147,7 +147,7 @@ const CreateCourse = () => {
 		if (isSuccess) {
 			const message = data?.message || "Course created successfully";
 			toast.success(message);
-			navigation("/admin/dashboard/content/live-course")
+			navigation("/admin/dashboard/content/courses")
 			methods.reset()
 		}
 		if(isError){
