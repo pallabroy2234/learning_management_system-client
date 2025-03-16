@@ -120,6 +120,25 @@ export const userApi = api.injectEndpoints({
 				body:data
 			}),
 			invalidatesTags:["User"]
+		}),
+
+
+		/**
+		 * @summary       Delete user by admin
+		 * @description   Delete user by admin by id
+		 * @method        DELETE
+		 * @path          /user/delete-user/:id
+		 * @security      Private
+		 * @tags          User
+		* */
+
+		deleteUserByAdmin : builder.mutation<IResponse, string>({
+			query: (id:string)=> ({
+				url: `/user/delete-user/${id}`,
+				method: "DELETE",
+				credentials: "include" as RequestCredentials,
+			}),
+			invalidatesTags: ["User"]
 		})
 	}),
 });
@@ -130,5 +149,6 @@ export const {
 	useCreatePasswordSocialAuthMutation,
 	useUpdatePasswordMutation,
 	useGetAllUsersByAdminQuery,
-	useUpdateRoleByAdminMutation
+	useUpdateRoleByAdminMutation,
+	useDeleteUserByAdminMutation,
 } = userApi;
