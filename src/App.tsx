@@ -6,6 +6,7 @@ import Loader from "./components/shared/Loader.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import "react-image-crop/dist/ReactCrop.css";
 import NotFound from "./page/NotFound.tsx";
+import Users from "./page/admin/Users";
 
 // * Import all Route components
 const Home = lazy(() => import("./page/public/Home"));
@@ -60,6 +61,7 @@ const App = () => {
                         <Route path="admin/dashboard" element={<DashboardLayout/>}>
                             <Route element={<ProtectedRoute adminRoute={true}/>}>
                                 <Route index={true} element={<Dashboard/>}/>
+                                <Route path="data/users" element={<Users/>}/>
                                 <Route path="content/create-course" element={<CreateCourse/>}/>
                                 <Route path="content/courses" element={<LiveCourse/>}/>
                             </Route>
