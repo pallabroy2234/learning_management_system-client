@@ -2,8 +2,8 @@ import {api} from "../api.ts";
 import {
 	ICreatePasswordSocialAuthRequest,
 	IResponse,
-	IUpdatePasswordRequest,
-	IUpdateUserInfoRequest,
+	IUpdatePasswordRequest, IUpdateRoleRequest,
+	IUpdateUserInfoRequest
 } from "./userTypes.ts";
 
 export const userApi = api.injectEndpoints({
@@ -100,6 +100,26 @@ export const userApi = api.injectEndpoints({
 				{ type: "User", id: "LIST" },
 				...(result?.payload?.map(({ _id }:any) => ({ type: "User", id: _id })) || []),
 			],
+		}),
+
+
+		/**
+		 * @summary       Update role by admin
+		 * @description   Update role by admin
+		 * @method        PUT
+		 * @path          /user/update-role/admin
+		 * @security      Private
+		 * @tags          User
+		 * @invalidateTags User
+		* */
+		updateRoleByAdmin:builder.mutation<IResponse, IUpdateRoleRequest>({
+			query:(data)=> ({
+				url:"/user/update-role/admin",
+				method:"PUT",
+				credentials:"include" as RequestCredentials,
+				body:data
+			}),
+			invalidatesTags:["User"]
 		})
 	}),
 });
@@ -109,5 +129,6 @@ export const {
 	useUpdateUserInfoMutation,
 	useCreatePasswordSocialAuthMutation,
 	useUpdatePasswordMutation,
-	useGetAllUsersByAdminQuery
+	useGetAllUsersByAdminQuery,
+	useUpdateRoleByAdminMutation
 } = userApi;
