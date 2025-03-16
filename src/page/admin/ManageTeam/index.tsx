@@ -1,6 +1,10 @@
 import Modal from "../../../components/shared/Modal.tsx";
 import {useEffect, useMemo, useState} from "react";
-import {useGetAllUsersByAdminQuery, useUpdateRoleByAdminMutation} from "../../../store/features/user/userApi.ts";
+import {
+	useDeleteUserByAdminMutation,
+	useGetAllUsersByAdminQuery,
+	useUpdateRoleByAdminMutation
+} from "../../../store/features/user/userApi.ts";
 import {ColumnDef} from "@tanstack/react-table";
 import {motion} from "framer-motion";
 import {FiTrash} from "react-icons/fi";
@@ -46,6 +50,11 @@ const ManageTeam = () => {
 	const [onlyAdmin, setOnlyAdmin] = useState([]);
 	const {data: getAdminUsers, isLoading, isSuccess, isError, error} = useGetAllUsersByAdminQuery({});
 	const [updateRole, {isLoading:updateRoleLoading, isSuccess:updateRoleSuccess, isError:isUpdateRoleError, error:updateRoleError, data:updateRoleData}] =useUpdateRoleByAdminMutation()
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+	const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+	const [deleteUser, {isLoading: isDeleteLoading, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError, data: deleteData}] =
+		useDeleteUserByAdminMutation();
+
 
 	/**
 	 * @summary      define form state (react-hook-form)
@@ -142,6 +151,48 @@ const ManageTeam = () => {
 	}, [updateRoleSuccess, isUpdateRoleError, updateRoleError, updateRoleData]);
 
 
+
+
+
+	/**
+	 * @summary      handle success and error response for delete user
+	 * @description  handle success and error response for delete user (react-query)
+	 * @sideEffects  show toast message
+	 * @sideEffects  close modal
+	 * @constant    message
+	* */
+
+	useEffect(() => {
+		if (isDeleteSuccess) {
+			const message = deleteData?.message || "User deleted successfully";
+			toast.success(message);
+			setIsDeleteModalOpen(false);
+			setSelectedUserId(null);
+		}
+		if (isDeleteError) {
+			if ("data" in deleteError) {
+				const err = deleteError as CustomError;
+				const message = err.data.message || "An error occurred";
+				toast.error(message);
+			}
+		}
+	}, [isDeleteError, isDeleteSuccess, deleteData, deleteError]);
+	
+	/**
+	 * @summary      handle delete user
+	 * @description  handle delete user by id
+	 * @sideEffects  delete user
+	 * @constant    selectedUserId
+	* */
+	const handleDeleteUser = async () => {
+		if (selectedUserId) {
+			await deleteUser(selectedUserId);
+		}
+	};
+
+
+
+
 	/**
 	 * @summary      define columns for table
 	 * @description  define columns for table (react-table)
@@ -196,9 +247,13 @@ const ManageTeam = () => {
 			{
 				accessorKey: "actions",
 				header: "Actions",
-				cell: () => (
+				cell: ({row}) => (
 					<div className='flex items-center  gap-2'>
 						<motion.button
+							onClick={() => {
+								setIsDeleteModalOpen(true)
+								setSelectedUserId(row.original._id);
+							}}
 							whileHover={{scale: 0.9}}
 							whileTap={{scale: 1.05}}
 							type='button'
@@ -239,7 +294,7 @@ const ManageTeam = () => {
 				} />}
 			</div>
 
-			{/* Modal */}
+			{/* Update Role Modal */}
 			<Modal
 				isModalOpen={isOpen}
 				setIsModalOpen={setIsOpen}
@@ -302,6 +357,42 @@ const ManageTeam = () => {
 					</div>
 				}
 			/>
+
+
+
+			{/* Delete user Modal	 */}
+			<Modal
+				isModalOpen={isDeleteModalOpen}
+				setIsModalOpen={setIsDeleteModalOpen}
+				children={
+					<div className='pt-2 pb-3'>
+						<h3 className='text-xl text-center font-bold  mb-4 text-gray-800 dark:text-gray-200 capitalize'>Confirm User Deletion</h3>
+						<p className='text-gray-600 dark:text-gray-400 mb-6'>
+							Are you sure you want to delete this user? This action cannot be undo.
+						</p>
+
+						<div className='flex justify-end gap-3'>
+							<button
+								onClick={() => {
+									setIsDeleteModalOpen(false);
+									setSelectedUserId(null);
+								}}
+								type='button'
+								className='px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors'>
+								Cancel
+							</button>
+							<button
+								onClick={handleDeleteUser}
+								type='button'
+								disabled={isDeleteLoading}
+								className={`${isDeleteLoading ? "cursor-not-allowed" : "cursor-pointer"} px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors disabled:opacity-50`}>
+								{isDeleteLoading ? <div className='flex items-center gap-2'>Deleting...</div> : "Confirm Delete"}
+							</button>
+						</div>
+					</div>
+				}
+			/>
+
 		</div>
 	);
 };
