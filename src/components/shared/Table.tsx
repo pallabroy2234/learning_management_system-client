@@ -9,7 +9,7 @@ import {
 	SortingState,
 	useReactTable,
 } from "@tanstack/react-table";
-import {FC, useState} from "react";
+import {FC, ReactNode, useState} from "react";
 import {FiChevronDown, FiChevronUp, FiDownload, FiPrinter} from "react-icons/fi";
 import {CSVLink} from "react-csv";
 
@@ -20,10 +20,11 @@ interface Props {
 	headerContent?: string;
 	isDownload?: boolean;
 	placeholder?: string;
+	children?: ReactNode;
 
 }
 
-const Table: FC<Props> = ({data, columns, isHeader, isDownload , placeholder="Search..." , headerContent}) => {
+const Table: FC<Props> = ({data, columns, isHeader, isDownload , placeholder="Search..." , headerContent ,children}) => {
 	const [globalFilter, setGlobalFilter] = useState("");
 	const [pagination, setPagination] = useState({
 		pageIndex: 0,
@@ -118,6 +119,10 @@ const Table: FC<Props> = ({data, columns, isHeader, isDownload , placeholder="Se
 						</button>
 					</div>
 				)}
+
+				{children}
+
+				{/* Search Input */}
 
 				<input
 					type='search'
