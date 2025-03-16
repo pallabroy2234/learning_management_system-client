@@ -1,7 +1,6 @@
-
-import {useEffect, useMemo} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {CustomError} from "../../../types/@types.ts";
-import {useGetAllUsersByAdminQuery} from "../../../store/features/user/userApi.ts";
+import {useDeleteUserByAdminMutation, useGetAllUsersByAdminQuery} from "../../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
 import Loader from "../../../components/shared/Loader.tsx";
 import Table from "../../../components/shared/Table.tsx";
@@ -9,8 +8,7 @@ import {ColumnDef} from "@tanstack/react-table";
 import {motion} from "framer-motion";
 import {FiTrash} from "react-icons/fi";
 import {MdOutlineMail} from "react-icons/md";
-
-
+import Modal from "../../../components/shared/Modal.tsx";
 
 interface IUser {
 	_id: string;
@@ -27,20 +25,85 @@ interface IUser {
 }
 
 const Users = () => {
-     const {data:getAllUser , isLoading, isSuccess, isError, error}  = useGetAllUsersByAdminQuery({})
+	// Fetch all users data with an admin query
+	const {data: getAllUser, isLoading, isSuccess, isError, error} = useGetAllUsersByAdminQuery({});
+
+	// State to control modal visibility and track selected user for deletion
+	const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+	const [isOpen, setIsOpen] = useState(false);
+	const [deleteUser, {isLoading: isDeleteLoading, isSuccess: isDeleteSuccess, isError: isDeleteError, error: deleteError, data: deleteData}] =
+		useDeleteUserByAdminMutation();
 
 
-	useEffect(()=> {
-		if(isError){
-			if("data" in error){
+	/**
+	 * @summary Handles errors when fetching users.
+	 *
+	 * @description
+	 * If the fetch request fails, this effect extracts the error message
+	 * and displays it using `react-hot-toast`.
+	 *
+	 * @dependencies [isError]
+	 */
+	useEffect(() => {
+		if (isError) {
+			if ("data" in error) {
 				const err = error as CustomError;
-				const message  = err.data.message || "An error occurred";
+				const message = err.data.message || "An error occurred";
 				toast.error(message);
 			}
 		}
-	},[isError, isSuccess])
+	}, [isError]);
 
 
+	/**
+	 * @summary Triggers user deletion when confirmed.
+	 *
+	 * @description
+	 * Calls the `deleteUser` mutation with the selected user ID.
+	 * Ensures a user ID is selected before executing.
+	 *
+	 * @returns {Promise<void>} - A promise resolving when deletion completes.
+	 */
+	const handleDeleteUser = async () => {
+		if (selectedUserId) {
+			await deleteUser(selectedUserId);
+		}
+	};
+
+
+	/**
+	 * @summary Handles success and error states after user deletion.
+	 *
+	 * @description
+	 * - If deletion succeeds, it shows a success toast and resets state.
+	 * - If deletion fails, it extracts the error message and displays a toast.
+	 *
+	 * @dependencies [isDeleteSuccess, isDeleteError, deleteData, deleteError]
+	 */
+	useEffect(() => {
+		if (isDeleteSuccess) {
+			const message = deleteData?.message || "User deleted successfully";
+			toast.success(message);
+			setIsOpen(false);
+			setSelectedUserId(null);
+		}
+		if (isDeleteError) {
+			if ("data" in deleteError) {
+				const err = deleteError as CustomError;
+				const message = err.data.message || "An error occurred";
+				toast.error(message);
+			}
+		}
+	}, [isDeleteError, isDeleteSuccess, deleteData, deleteError]);
+
+	/**
+	 * @summary Defines table columns for the user management list.
+	 *
+	 * @description
+	 * Each column corresponds to a user field and custom cell rendering.
+	 *
+	 * @returns {Array<ColumnDef<IUser>>} - Array of column definitions.
+	 */
 
 	const columns = useMemo<ColumnDef<IUser>[]>(
 		() => [
@@ -91,9 +154,13 @@ const Users = () => {
 			{
 				accessorKey: "actions",
 				header: "Actions",
-				cell: () => (
+				cell: ({row}) => (
 					<div className='flex items-center  gap-2'>
 						<motion.button
+							onClick={() => {
+								setIsOpen(true);
+								setSelectedUserId(row.original._id);
+							}}
 							whileHover={{scale: 0.9}}
 							whileTap={{scale: 1.05}}
 							type='button'
@@ -107,7 +174,12 @@ const Users = () => {
 				accessorKey: "Email",
 				header: "Email",
 				cell: ({row}) => (
-					<motion.button onClick={() => window.location.href = `mailto:${row.original.email}`} whileHover={{scale: 0.9}} whileTap={{scale: 1.05}} type='button' className='ml-2'>
+					<motion.button
+						onClick={() => (window.location.href = `mailto:${row.original.email}`)}
+						whileHover={{scale: 0.9}}
+						whileTap={{scale: 1.05}}
+						type='button'
+						className='ml-2'>
 						<MdOutlineMail size={20} />
 					</motion.button>
 				),
@@ -121,10 +193,51 @@ const Users = () => {
 	return (
 		<div className='mt-[120px]'>
 			<div className='px-4 sm:px-6 min-h-screen mb-[80px]'>
-				{
-					isLoading ? <Loader/> : <Table data={isSuccess ? getAllUser?.payload : []} columns={columns}  isHeader={true} placeholder="Search Users" headerContent="Users"/>
-				}
+				{isLoading ? (
+					<Loader />
+				) : (
+					<Table
+						data={isSuccess ? getAllUser?.payload : []}
+						columns={columns}
+						isHeader={true}
+						placeholder='Search Users'
+						headerContent='Users'
+					/>
+				)}
 			</div>
+
+			{/* Delete user Modal	 */}
+			<Modal
+				isModalOpen={isOpen}
+				setIsModalOpen={setIsOpen}
+				children={
+					<div className='pt-2 pb-3'>
+						<h3 className='text-xl text-center font-bold  mb-4 text-gray-800 dark:text-gray-200 capitalize'>Confirm User Deletion</h3>
+						<p className='text-gray-600 dark:text-gray-400 mb-6'>
+							Are you sure you want to delete this user? This action cannot be undo.
+						</p>
+
+						<div className='flex justify-end gap-3'>
+							<button
+								onClick={() => {
+									setIsOpen(false);
+									setSelectedUserId(null);
+								}}
+								type='button'
+								className='px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors'>
+								Cancel
+							</button>
+							<button
+								onClick={handleDeleteUser}
+								type='button'
+								disabled={isDeleteLoading}
+								className={`${isDeleteLoading ? "cursor-not-allowed" : "cursor-pointer"} px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors disabled:opacity-50`}>
+								{isDeleteLoading ? <div className='flex items-center gap-2'>Deleting...</div> : "Confirm Delete"}
+							</button>
+						</div>
+					</div>
+				}
+			/>
 		</div>
 	);
 };
