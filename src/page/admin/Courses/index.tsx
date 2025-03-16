@@ -8,9 +8,6 @@ import {ColumnDef} from "@tanstack/react-table";
 import {motion} from "framer-motion";
 import {FiEdit, FiTrash2} from "react-icons/fi";
 
-
-
-
 interface Course {
 	_id: string;
 	name: string;
@@ -26,25 +23,44 @@ interface Course {
 }
 
 const LiveCourse = () => {
-	const {data:getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({})
+	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({});
 
-	useEffect(()=> {
-		if(isError){
-			if("data" in error){
+	/**
+	 * @summary         Handles API request errors.
+	 *
+	 * @description    Monitors the isError state and displays a toast notification
+	 *                 with an appropriate error message if an error occurs.
+	 * @dependency     Runs when `isSuccess`, `isError`, or `error` changes.
+	 */
+	useEffect(() => {
+		if (isError) {
+			if ("data" in error) {
 				const err = error as CustomError;
 				const message = err.data.message || "An error occurred";
 				toast.error(message);
 			}
 		}
-	},[isSuccess, isError, error])
+	}, [isSuccess, isError, error]);
 
-
-
-
-
+	/**
+	 * @summary   Truncates text beyond a specified length.
+	 * @param    text - The original text string to be truncated.
+	 * @param    length - The maximum length allowed before truncation.
+	 * @returns  The truncated text with an ellipsis if it exceeds the given length.
+	 *
+	 * @example
+	 * truncate("This is a long text", 10); // Output: "This is a..."
+	 */
 	const truncate = (text: string, length: number) => {
 		return text.length > length ? text.substring(0, length) + "..." : text;
 	};
+
+	/**
+	 * @summary       Defines the column structure for the courses table.
+	 * @description  This configuration is used with React Table (ColumnDef) to display
+	 *               course-related data such as ID, name, price, rating, and more. Each column
+	 *               includes an accessor key and optional custom rendering logic.
+	 */
 
 	const columns = useMemo<ColumnDef<Course>[]>(
 		() => [
@@ -124,11 +140,10 @@ const LiveCourse = () => {
 				cell: () => (
 					<div className='flex space-x-3'>
 						<motion.button
-							type="button"
+							type='button'
 							whileHover={{scale: 1.05}}
 							whileTap={{scale: 0.95}}
 							className='text-blue-500 hover:text-blue-600 dark:text-blue-400'>
-
 							<FiEdit size={18} />
 						</motion.button>
 
@@ -149,9 +164,7 @@ const LiveCourse = () => {
 		<div className='mt-[120px]'>
 			{/*<CoursesTable data={courses} onEdit={handleEdit} onDelete={handleDelete} />*/}
 			<div className='px-4 sm:px-6 min-h-screen mb-[80px]'>
-				{
-                       isLoading ? <Loader/> : <Table data={isSuccess ? getAllCourses?.payload : []} columns={columns}  isDownload={true} />
-				}
+				{isLoading ? <Loader /> : <Table data={isSuccess ? getAllCourses?.payload : []} columns={columns} isDownload={true} />}
 			</div>
 		</div>
 	);
