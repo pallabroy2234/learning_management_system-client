@@ -18,3 +18,9 @@ export interface IUpdatePasswordRequest {
 	oldPassword: string;
 	newPassword: string;
 }
+
+
+export interface IUpdateRoleRequest {
+	email: string;
+	role: string;
+}
