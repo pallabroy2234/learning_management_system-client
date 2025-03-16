@@ -1,5 +1,5 @@
 
-import {useEffect, useMemo, useState} from "react";
+import {useEffect, useMemo} from "react";
 import {CustomError} from "../../../types/@types.ts";
 import {useGetAllUsersByAdminQuery} from "../../../store/features/user/userApi.ts";
 import toast from "react-hot-toast";
@@ -27,14 +27,10 @@ interface IUser {
 }
 
 const Users = () => {
-	const [users, setUsers] = useState<Array<IUser>>([]);
      const {data:getAllUser , isLoading, isSuccess, isError, error}  = useGetAllUsersByAdminQuery({})
 
 
 	useEffect(()=> {
-		if(isSuccess){
-			setUsers(getAllUser?.payload)
-		}
 		if(isError){
 			if("data" in error){
 				const err = error as CustomError;
@@ -126,7 +122,7 @@ const Users = () => {
 		<div className='mt-[120px]'>
 			<div className='px-4 sm:px-6 min-h-screen mb-[80px]'>
 				{
-					isLoading ? <Loader/> : <Table data={users} columns={columns}  isHeader={true} placeholder="Search Users" headerContent="Users"/>
+					isLoading ? <Loader/> : <Table data={isSuccess ? getAllUser?.payload : []} columns={columns}  isHeader={true} placeholder="Search Users" headerContent="Users"/>
 				}
 			</div>
 		</div>
