@@ -6,7 +6,6 @@ import Loader from "./components/shared/Loader.tsx";
 import ProtectedRoute from "./routes/ProtectedRoute.tsx";
 import "react-image-crop/dist/ReactCrop.css";
 import NotFound from "./page/NotFound.tsx";
-import Users from "./page/admin/Users";
 
 // * Import all Route components
 const Home = lazy(() => import("./page/public/Home"));
@@ -20,6 +19,9 @@ const Dashboard = lazy(() => import("./page/admin/dashboard"));
 const CreateCourse = lazy(() => import("./page/admin/CreateCourse"));
 const DashboardLayout = lazy(() => import("./components/layout/dashboard/DashboardLayout.tsx"));
 const LiveCourse = lazy(() => import("./page/admin/Courses"));
+const Users = lazy(() => import("./page/admin/Users"));
+const ManageTeam = lazy(() => import("./page/admin/ManageTeam"));
+
 const App = () => {
     const [loader, setLoader] = useState<boolean>(true);
     useEffect(() => {
@@ -64,6 +66,7 @@ const App = () => {
                                 <Route path="data/users" element={<Users/>}/>
                                 <Route path="content/create-course" element={<CreateCourse/>}/>
                                 <Route path="content/courses" element={<LiveCourse/>}/>
+                                <Route path="controllers/manage-team" element={<ManageTeam/>}/>
                             </Route>
                         </Route>
 
