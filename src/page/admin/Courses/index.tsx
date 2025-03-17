@@ -1,5 +1,5 @@
-import {useEffect, useMemo} from "react";
-import {useGetCoursesQuery} from "../../../store/features/course/courseApi.ts";
+import {useEffect, useMemo, useState} from "react";
+import {useDeleteCourseByAdminMutation, useGetCoursesQuery} from "../../../store/features/course/courseApi.ts";
 import {CustomError} from "../../../types/@types.ts";
 import toast from "react-hot-toast";
 import Loader from "../../../components/shared/Loader.tsx";
@@ -7,6 +7,7 @@ import Table from "../../../components/shared/Table.tsx";
 import {ColumnDef} from "@tanstack/react-table";
 import {motion} from "framer-motion";
 import {FiEdit, FiTrash2} from "react-icons/fi";
+import Modal from "../../../components/shared/Modal.tsx";
 
 interface Course {
 	_id: string;
@@ -23,8 +24,12 @@ interface Course {
 }
 
 const LiveCourse = () => {
-	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({});
+	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+	const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+	
 
+	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({});
+	const [deleteCourseByAdmin , {isLoading:isDeleteLoading, isSuccess:isDeleteSuccess, isError:isDeleteError,error:deleteError, data:deleteData}] =useDeleteCourseByAdminMutation()
 	/**
 	 * @summary         Handles API request errors.
 	 *
@@ -55,13 +60,44 @@ const LiveCourse = () => {
 		return text.length > length ? text.substring(0, length) + "..." : text;
 	};
 
+
+
+
+
+	const handleDeleteCourse = async ()=> {
+		if(selectedCourseId){
+			await deleteCourseByAdmin(selectedCourseId);
+		}
+	}
+
+
+	useEffect(() => {
+		if(isDeleteSuccess){
+			const message = deleteData?.message || "Course deleted successfully";
+			toast.success(message);
+			setIsDeleteModalOpen(false);
+			setSelectedCourseId(null);
+		}
+		if(isDeleteError){
+			if("data" in deleteError){
+				const err = deleteError as CustomError;
+				const message = err.data.message || "An error occurred";
+				toast.error(message);
+			}
+		}
+
+	}, [isDeleteError, isDeleteSuccess,]);
+
+
+
+
+
 	/**
 	 * @summary       Defines the column structure for the courses table.
 	 * @description  This configuration is used with React Table (ColumnDef) to display
 	 *               course-related data such as ID, name, price, rating, and more. Each column
 	 *               includes an accessor key and optional custom rendering logic.
 	 */
-
 	const columns = useMemo<ColumnDef<Course>[]>(
 		() => [
 			// {
@@ -137,7 +173,7 @@ const LiveCourse = () => {
 			{
 				id: "Actions",
 				header: "Actions",
-				cell: () => (
+				cell: ({row}) => (
 					<div className='flex space-x-3'>
 						<motion.button
 							type='button'
@@ -148,6 +184,11 @@ const LiveCourse = () => {
 						</motion.button>
 
 						<motion.button
+							onClick={()=> {
+								setSelectedCourseId(row.original._id);
+							   setIsDeleteModalOpen(true);
+							}}
+							type="button"
 							whileHover={{scale: 1.05}}
 							whileTap={{scale: 0.95}}
 							className='text-red-500 hover:text-red-600 dark:text-red-400'>
@@ -166,6 +207,40 @@ const LiveCourse = () => {
 			<div className='px-4 sm:px-6 min-h-screen mb-[80px]'>
 				{isLoading ? <Loader /> : <Table data={isSuccess ? getAllCourses?.payload : []} columns={columns} isDownload={true} />}
 			</div>
+
+
+			{/* Delete Course Modal	 */}
+			<Modal
+				isModalOpen={isDeleteModalOpen}
+				setIsModalOpen={setIsDeleteModalOpen}
+				children={
+					<div className='pt-2 pb-3'>
+						<h3 className='text-xl text-center font-bold  mb-4 text-gray-800 dark:text-gray-200 capitalize'>Confirm Course Deletion</h3>
+						<p className='text-gray-600 dark:text-gray-400 mb-6'>
+							Are you sure you want to delete this course? This action cannot be undone.
+						</p>
+
+						<div className='flex justify-end gap-3'>
+							<button
+								onClick={() => {
+									setIsDeleteModalOpen(false);
+									setSelectedCourseId(null);
+								}}
+								type='button'
+								className='px-4 py-2 text-gray-700 dark:text-gray-300 bg-gray-100 dark:bg-gray-700 hover:bg-gray-200 dark:hover:bg-gray-600 rounded-md transition-colors'>
+								Cancel
+							</button>
+							<button
+								onClick={handleDeleteCourse}
+								type='button'
+								disabled={isDeleteLoading}
+								className={`${isDeleteLoading ? "cursor-not-allowed" : "cursor-pointer"} px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md transition-colors disabled:opacity-50`}>
+								{isDeleteLoading ? <div className='flex items-center gap-2'>Deleting...</div> : "Confirm Delete"}
+							</button>
+						</div>
+					</div>
+				}
+			/>
 		</div>
 	);
 };
