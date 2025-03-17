@@ -52,7 +52,6 @@ export const userApi = api.injectEndpoints({
 		 * @security      Private
 		 * @returns {IResponse} Response object containing the list of courses
 		* */
-
 		getCourses: builder.query({
 			query: ()=> ({
 				url: "/course/get-all-courses/admin",
@@ -64,8 +63,28 @@ export const userApi = api.injectEndpoints({
 				// ...result.map(({ _id }:any) => ({ type: 'Course', id: _id })),
 				...(result?.payload?.map(({_id}:any)=> ({type:"Course", id:_id})) || [])
 			]
+		}),
+
+
+
+		/**
+		 * @summary       Delete Course
+		 * @description   Delete a course by ID as an admin
+		 * @method        DELETE
+		 * @path          /course/course-delete/:courseId
+		 * @security      Private
+		 * @param {string} courseId - The ID of the course to delete
+		 * @returns {IResponse} Response object containing the course deletion status
+		* */
+		deleteCourseByAdmin: builder.mutation<IResponse, string>({
+			query:(courseId)=> ({
+				url:`/course/course-delete/${courseId}`,
+				method:"DELETE",
+				credentials:"include" as RequestCredentials,
+			}),
+			invalidatesTags: [{type:"Course", id:"LIST"}],
 		})
 	}),
 });
 
-export const {useCreateCourseMutation,useGetCoursesQuery} = userApi;
+export const {useCreateCourseMutation,useGetCoursesQuery , useDeleteCourseByAdminMutation} = userApi;
