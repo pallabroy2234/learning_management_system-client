@@ -8,6 +8,7 @@ import {ColumnDef} from "@tanstack/react-table";
 import {motion} from "framer-motion";
 import {FiEdit, FiTrash2} from "react-icons/fi";
 import Modal from "../../../components/shared/Modal.tsx";
+import {useNavigate} from "react-router-dom";
 
 interface Course {
 	_id: string;
@@ -26,6 +27,7 @@ interface Course {
 const LiveCourse = () => {
 	const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 	const [selectedCourseId, setSelectedCourseId] = useState<string | null>(null);
+	const navigate = useNavigate();
 	
 
 	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({});
@@ -62,8 +64,16 @@ const LiveCourse = () => {
 
 
 
-
-
+	/**
+	 * @summary       Handles the deletion of a course.
+	 * @description  This function is triggered when the user confirms the deletion of a course.
+	 * 			 It sends a DELETE request to the API to remove the course from the database.
+	 * 			 If the request is successful, a success message is displayed to the user.
+	 * 			 If an error occurs, an error message is displayed.
+	 * 			 * @async
+	 * 			 * @returns {Promise<void>}
+	 *
+	* */
 	const handleDeleteCourse = async ()=> {
 		if(selectedCourseId){
 			await deleteCourseByAdmin(selectedCourseId);
@@ -71,6 +81,14 @@ const LiveCourse = () => {
 	}
 
 
+	/**
+	 * @summary       Handles side effects related to course deletion.
+	 * @description   This effect listens for changes in `isDeleteSuccess` and `isDeleteError`.
+	 *                If the course is successfully deleted, it displays a success message,
+	 *                closes the delete modal, and resets the selected course ID.
+	 *                If an error occurs, it extracts the error message and displays it to the user.
+	 * @effect        Runs whenever `isDeleteSuccess` or `isDeleteError` changes.
+	 */
 	useEffect(() => {
 		if(isDeleteSuccess){
 			const message = deleteData?.message || "Course deleted successfully";
@@ -87,8 +105,6 @@ const LiveCourse = () => {
 		}
 
 	}, [isDeleteError, isDeleteSuccess,]);
-
-
 
 
 
@@ -176,6 +192,7 @@ const LiveCourse = () => {
 				cell: ({row}) => (
 					<div className='flex space-x-3'>
 						<motion.button
+							onClick={() => navigate(`/admin/dashboard/content/edit-course/${row.original._id}`)}
 							type='button'
 							whileHover={{scale: 1.05}}
 							whileTap={{scale: 0.95}}
