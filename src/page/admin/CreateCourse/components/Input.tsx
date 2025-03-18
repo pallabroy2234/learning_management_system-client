@@ -39,7 +39,7 @@ const Input: FC<InputProps> = ({name, label, type = "text", placeholder = "", re
 				return (
 					<motion.input
 						type="number"
-						onKeyDown={(e) => ["e", "E", "+", "-"].includes(e.key) && e.preventDefault()}
+						onKeyDown={(e) => ["e", "E", "+", "-","ArrowUp","ArrowDown"].includes(e.key) && e.preventDefault()}
 						{...commonProps}
 					/>
 				);
