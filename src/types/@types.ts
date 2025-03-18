@@ -40,7 +40,7 @@ export interface IResponse {
 
 
 export interface ICourseFormValues {
-    thumbnail: string;
+    thumbnail: string | object;
     name: string;
     price: number;
     estimatedPrice: number;
