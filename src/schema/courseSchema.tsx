@@ -32,12 +32,17 @@ export const courseInfoSchema = yup.object().shape({
 		.mixed()
 		.required("Thumbnail is required")
 		.test("fileType", "Unsupported file format", (value: any) => {
-			return value && ["image/jpeg", "image/png", "image/jpg, image/webp"].includes(value[0].type as string);
+			 if (value && value?.url) return true
+			if (!value || !value[0]) return false;
+			return value || ["image/jpeg", "image/png", "image/jpg, image/webp"].includes(value[0].type as string);
 		})
 		.test("fileSize", "File size is too large(Max 2MB)", (value: any) => {
-			return value && value[0]?.size <= 2 * 1024 * 1024;
+			if (value && value?.url) return true
+			if (!value || !value[0]) return false;
+			return value[0].size <= 2 * 1024 * 1024;
 		})
 		.test("dimension", "Minimum dimensions 1280x720", async (value: any) => {
+			if (value?.url) return true
 			if (!value || !value[0]) return false;
 			try {
 				const dimensions: any = await getImageDimensions(value[0]);
