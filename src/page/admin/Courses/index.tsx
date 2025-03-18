@@ -1,5 +1,8 @@
 import {useEffect, useMemo, useState} from "react";
-import {useDeleteCourseByAdminMutation, useGetCoursesQuery} from "../../../store/features/course/courseApi.ts";
+import {
+	useDeleteCourseByAdminMutation,
+	useGetAllCoursesByAdminQuery
+} from "../../../store/features/course/courseApi.ts";
 import {CustomError} from "../../../types/@types.ts";
 import toast from "react-hot-toast";
 import Loader from "../../../components/shared/Loader.tsx";
@@ -30,7 +33,7 @@ const LiveCourse = () => {
 	const navigate = useNavigate();
 	
 
-	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetCoursesQuery({});
+	const {data: getAllCourses, isLoading, isSuccess, isError, error} = useGetAllCoursesByAdminQuery({});
 	const [deleteCourseByAdmin , {isLoading:isDeleteLoading, isSuccess:isDeleteSuccess, isError:isDeleteError,error:deleteError, data:deleteData}] =useDeleteCourseByAdminMutation()
 	/**
 	 * @summary         Handles API request errors.
