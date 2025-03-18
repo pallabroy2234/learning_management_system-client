@@ -70,27 +70,35 @@ const Table: FC<Props> = ({data, columns, isHeader, isDownload , placeholder="Se
 	/**
 	 * @summary            Initial Animation
 	 * */
+	// const initialAnimation = {
+	// 	initial: {opacity: 0, scale: 0.95, y: 20},
+	// 	animate: {
+	// 		opacity: 1,
+	// 		scale: 1,
+	// 		y: 0,
+	// 		transition: {
+	// 			type: "spring",
+	// 			stiffness: 150,
+	// 			damping: 15,
+	// 			mass: 0.5,
+	// 			delay: 0.15,
+	// 		},
+	// 	},
+	// 	exit: {
+	// 		opacity: 0,
+	// 		scale: 0.95,
+	// 		y: -20,
+	// 		transition: {duration: 0.2},
+	// 	},
+	// };
+
+
 	const initialAnimation = {
-		initial: {opacity: 0, scale: 0.95, y: 20},
-		animate: {
-			opacity: 1,
-			scale: 1,
-			y: 0,
-			transition: {
-				type: "spring",
-				stiffness: 150,
-				damping: 15,
-				mass: 0.5,
-				delay: 0.15,
-			},
-		},
-		exit: {
-			opacity: 0,
-			scale: 0.95,
-			y: -20,
-			transition: {duration: 0.2},
-		},
-	};
+		initial: {opacity: 0, y:-15},
+		animate: {opacity: 1, y:0},
+		exit: {opacity: 0, x: -20},
+		}
+
 
 
 	return (

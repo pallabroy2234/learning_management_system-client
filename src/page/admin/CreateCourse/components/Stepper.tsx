@@ -11,8 +11,15 @@ interface Props {
 const Stepper: FC<Props> = ({steps, currentStep}) => {
 	const isLastStep = currentStep === steps.length - 1;
 
+
+	const initialAnimation = {
+		initial: {opacity: 0, y:-15},
+		animate: {opacity: 1, y:0},
+		exit: {opacity: 0, x: -20},
+	}
+
 	return (
-		<div className='w-full '>
+		<motion.div {...initialAnimation} className='w-full '>
 			<div className='flex flex-row justify-between 500px:w-[90%] w-[92%] mx-auto relative z-[100]'>
 				{steps?.map((step, index) => {
 					const isCompleted = index < currentStep || isLastStep;
@@ -41,7 +48,7 @@ const Stepper: FC<Props> = ({steps, currentStep}) => {
 					/>
 				</div>
 			</div>
-		</div>
+		</motion.div>
 	);
 };
 
