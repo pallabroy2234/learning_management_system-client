@@ -21,7 +21,7 @@ const DashboardLayout = lazy(() => import("./components/layout/dashboard/Dashboa
 const LiveCourse = lazy(() => import("./page/admin/Courses"));
 const Users = lazy(() => import("./page/admin/Users"));
 const ManageTeam = lazy(() => import("./page/admin/ManageTeam"));
-
+const EditCourse = lazy(() => import("./page/admin/EditCourse"));
 const App = () => {
     const [loader, setLoader] = useState<boolean>(true);
     useEffect(() => {
@@ -65,6 +65,7 @@ const App = () => {
                                 <Route index={true} element={<Dashboard/>}/>
                                 <Route path="data/users" element={<Users/>}/>
                                 <Route path="content/create-course" element={<CreateCourse/>}/>
+                                <Route path="content/edit-course/:courseId" element={<EditCourse/>}/>
                                 <Route path="content/courses" element={<LiveCourse/>}/>
                                 <Route path="controllers/manage-team" element={<ManageTeam/>}/>
                             </Route>
