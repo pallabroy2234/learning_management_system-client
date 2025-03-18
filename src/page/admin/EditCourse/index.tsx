@@ -4,7 +4,7 @@ import {FormProvider, useForm} from "react-hook-form";
 import {CustomError, ICourseFormValues} from "../../../types/@types.ts";
 import {yupResolver} from "@hookform/resolvers/yup";
 import {
-	useGetCourseByIdQuery, useUpdateCourseMutation
+	useGetCourseByAdminQuery, useUpdateCourseAdminMutation
 } from "../../../store/features/course/courseApi.ts";
 import {useNavigate, useParams} from "react-router-dom";
 import {AnimatePresence} from "framer-motion";
@@ -16,7 +16,6 @@ import CourseRequirements from "../CreateCourse/components/CourseRequirements.ts
 import CourseContent from "../CreateCourse/components/CourseContent.tsx";
 import CoursePreview from "../CreateCourse/components/CoursePreview.tsx";
 import toast from "react-hot-toast";
-import {DevTool} from "@hookform/devtools";
 
 
 
@@ -27,7 +26,7 @@ const EditCourse = () => {
 	const steps = ["Basic Info", "Requirements", "Course Content", "Preview"];
 	const stepsSchemas = [courseInfoSchema, requirementsSchema, courseContentSchema, combinedSchema];
 
-	const [updateCourseByAdmin,{isLoading:isUpdateLoading, isSuccess:isUpdateSuccess,isError:isUpdateError,error:updateError,data:updateData}]= useUpdateCourseMutation()
+	const [updateCourseByAdmin,{isLoading:isUpdateLoading, isSuccess:isUpdateSuccess,isError:isUpdateError,error:updateError,data:updateData}]= useUpdateCourseAdminMutation()
 
 
 
@@ -37,7 +36,7 @@ const EditCourse = () => {
 		isSuccess: isCourseDataSuccess,
 		isError: isCourseDataError,
 		error: courseDataError,
-	} = useGetCourseByIdQuery(courseId as string);
+	} = useGetCourseByAdminQuery(courseId as string);
 
 	/**
 	 * @summary Form Methods
@@ -289,7 +288,6 @@ const EditCourse = () => {
 					</div>
 				</div>
 			</div>
-			<DevTool control={methods.control}/>
 		</div>
 	);
 };

@@ -52,7 +52,7 @@ export const courseApi = api.injectEndpoints({
 		 * @security      Private
 		 * @returns {IResponse} Response object containing the list of courses
 		* */
-		getCourses: builder.query({
+		getAllCoursesByAdmin: builder.query({
 			query: ()=> ({
 				url: "/course/get-all-courses/admin",
 				method: "GET",
@@ -73,9 +73,9 @@ export const courseApi = api.injectEndpoints({
 		 * @tags          Course
 		 *
 		* */
-		getCourseById: builder.query<IResponse, string>({
+		getCourseByAdmin: builder.query<IResponse, string>({
 			 query: (courseId)=> ({
-				 url: `/course/get-course/${courseId}`,
+				 url: `/course/get-course/admin/${courseId}`,
 				 method: "GET",
 				 credentials: "include" as RequestCredentials,
 			 }),
@@ -103,7 +103,7 @@ export const courseApi = api.injectEndpoints({
 
 
 		/**
-		 * @summary       Update Course
+		 * @summary       Update Course By Id as Admin
 		 * @description   Update a course by ID as an admin
 		 * @method        PUT
 		 * @path          /course/update/:courseId
@@ -113,7 +113,7 @@ export const courseApi = api.injectEndpoints({
 		 * @returns {IResponse} Response object containing the course update status
 		 */
 
-		updateCourse: builder.mutation<IResponse, any>({
+		updateCourseAdmin: builder.mutation<IResponse, any>({
 			query:({courseId, data})=> ({
 				url:`/course/update/${courseId}`,
 				method:"PUT",
@@ -126,4 +126,4 @@ export const courseApi = api.injectEndpoints({
 	}),
 });
 
-export const {useCreateCourseMutation,useGetCoursesQuery , useDeleteCourseByAdminMutation,useGetCourseByIdQuery,useUpdateCourseMutation} = courseApi;
+export const {useCreateCourseMutation,useGetAllCoursesByAdminQuery , useDeleteCourseByAdminMutation,useGetCourseByAdminQuery,useUpdateCourseAdminMutation} = courseApi;
