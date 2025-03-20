@@ -17,21 +17,19 @@ import * as yup from "yup";
 export const heroSchema = yup.object().shape({
 	img: yup
 		.mixed()
-		.required("Image is required")
 		// .test("fileExists", "Image is required", (value: any) => {
 		// 	if (value && value?.url) return true;
 		// 	return value && value[0];
 		// })
 		.test("fileType", "Unsupported file format", (value: any) => {
-
-			if (value === "" || value.length === 0 ) return true;
 			if (value && value?.url) return true;
+			if (value === "" || value.length === 0 ) return true;
 			if (!value || !value[0]) return false;
 			return value || ["image/jpeg", "image/png", "image/jpg, image/webp , image/*"].includes(value[0].type as string as string);
 		})
 		.test("fileSize", "File size is too large(Max 2MB)", (value: any) => {
-			if (value === "" || value.length === 0) return true;
 			if (value && value?.url) return true;
+			if (value === "" || value.length === 0) return true;
 			if (!value || !value[0]) return false;
 			return value[0].size <= 2 * 1024 * 1024;
 		}),
